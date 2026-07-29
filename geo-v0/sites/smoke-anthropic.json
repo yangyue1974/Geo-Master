@@ -1,0 +1,11 @@
+{
+  "_comment": "验收清单第一条:探针仅凭一个 sitemap URL 即可对任意网站跑通。这是用来做冒烟测试的第三方站点 —— 我们对它没有任何内部访问,只有一个 URL,和未来客户的情况完全一样。",
+  "id": "smoke-anthropic",
+  "siteName": "Anthropic Docs",
+  "siteDomain": "docs.anthropic.com",
+  "nameVariants": ["Anthropic", "docs.anthropic.com", "Anthropic docs"],
+  "sitemap": "https://docs.anthropic.com/sitemap.xml",
+  "entityPatterns": [],
+  "vertical": { "noun": "" },
+  "sampling": { "control": 5, "detail": 5, "aggregate": 5, "fresh": 3 }
+}

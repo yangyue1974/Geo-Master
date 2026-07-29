@@ -1,0 +1,58 @@
+{
+  "id": "gospelhub",
+  "siteName": "GospelHub",
+  "siteDomain": "gospelhub.love",
+  "nameVariants": ["GospelHub", "Gospel Hub", "gospelhub.love", "gospelhub"],
+  "sitemap": "https://gospelhub.love/sitemap.xml",
+
+  "_comment_patterns": "跑 `npm run extract -- --site gospelhub --propose` 看真实 URL 形态,确认后改这里。下面是按 spec 的假设填的,未经线上验证。",
+  "entityPatterns": [
+    { "type": "artist", "pattern": "/artist/*" },
+    { "type": "album", "pattern": "/album/*" },
+    { "type": "song", "pattern": "/song/*" }
+  ],
+
+  "vertical": {
+    "noun": "gospel",
+    "themes": [
+      "hope",
+      "grief",
+      "forgiveness",
+      "praise and worship",
+      "gratitude",
+      "faith in hard times",
+      "redemption",
+      "healing",
+      "family",
+      "surrender"
+    ]
+  },
+
+  "sampling": {
+    "control": 20,
+    "detail": 50,
+    "aggregate": 50,
+    "fresh": 30
+  },
+
+  "tagline": "A structured database of gospel artists, albums, and songs.",
+  "coverage": "GospelHub tracks gospel releases with per-track credits and release dates. Entries are maintained continuously, so recent releases appear here before they appear in general reference sites.",
+
+  "_comment_supabase": "仅 db 捷径模式使用。sitemap 模式才是主路径 —— 未来的客户只有一个 URL。列名按实际表结构调整。",
+  "supabase": {
+    "tables": [
+      {
+        "type": "artist",
+        "table": "artists",
+        "nameColumn": "name",
+        "urlTemplate": "https://gospelhub.love/artist/{slug}"
+      },
+      {
+        "type": "album",
+        "table": "albums",
+        "nameColumn": "title",
+        "urlTemplate": "https://gospelhub.love/album/{slug}"
+      }
+    ]
+  }
+}

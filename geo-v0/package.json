@@ -1,0 +1,34 @@
+{
+  "name": "geo-v0",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "GEO v0 — detect / fix / re-measure loop for AI answer-engine citation rate",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "geo": "tsx src/cli.ts",
+    "verify": "tsx src/cli.ts verify",
+    "audit": "tsx src/cli.ts audit",
+    "extract": "tsx src/cli.ts extract",
+    "queries": "tsx src/cli.ts queries",
+    "probe": "tsx src/cli.ts probe",
+    "score": "tsx src/cli.ts score",
+    "report": "tsx src/cli.ts report",
+    "diff": "tsx src/cli.ts diff",
+    "fixpack": "tsx src/cli.ts fixpack",
+    "indexnow": "tsx src/cli.ts indexnow",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test src/**/*.test.ts",
+    "e2e": "tsx src/testkit/e2e.ts"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

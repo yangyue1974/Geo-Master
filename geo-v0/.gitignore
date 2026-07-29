@@ -1,0 +1,20 @@
+node_modules/
+.env
+*.log
+.tmp/
+
+# 原始响应缓存体积大,不入库;
+# 但 entities.json / queries.json / scores/ 必须入库 —— 复测的可复现性依赖它们
+data/raw/
+data/cache/
+data/*/cache/
+data/_verify/
+
+# 修复包是生成物,按需交付,不入库
+fixpack/output/
+
+# e2e 自测产物
+data/e2e-fixture*/
+data/scores/e2e-*.json
+report/*e2e*
+sites/e2e-fixture*.json
