@@ -2,6 +2,7 @@ import { log } from '../util/log.js';
 import { writeJson, paths } from '../util/fsx.js';
 import { resolveEngines } from './engines/index.js';
 import { extractCitations, deepScanUrls } from './engines/extract.js';
+import { normalizeUrl } from '../util/url.js';
 
 /**
  * 引擎冒烟 —— 跑基线之前必须先过这一关。
@@ -68,11 +69,21 @@ export async function verifyEngines(opts: VerifyOpts = {}): Promise<boolean> {
       log.info(`  提取到 ${citations.length} 条引用,字段分布: ${JSON.stringify(viaCounts)}`);
       for (const c of citations.slice(0, 5)) log.info(`    ${c.domain}  ←  ${c.via}`);
 
-      // extractor 没覆盖到的 URL 字段 —— 这是发现上游改接口的主要信号
-      const covered = new Set(citations.map((c) => c.url.toLowerCase()));
-      const missed = dedupePaths(deep).filter(
-        (d) => !covered.has(d.url.toLowerCase()) && !/schema\.org|openrouter\.ai|googleapis\.com\/\$/.test(d.url),
+      /*
+       * extractor 没覆盖到的 URL 字段 —— 这是发现上游改接口的主要信号。
+       *
+       * 两侧都必须归一化后再比:深度扫描报的是原始 URL(带尾斜杠、带追踪参数),
+       * citations 里存的是归一化后的。直接比字符串会把已经抽到的引用报成"漏掉的",
+       * 然后把人送去找根本不存在的 extractor 缺口。
+       */
+      const covered = new Set(
+        citations.map((c) => normalizeUrl(c.url)?.toLowerCase()).filter((x): x is string => !!x),
       );
+      const missed = dedupePaths(deep).filter((d) => {
+        const n = normalizeUrl(d.url)?.toLowerCase();
+        if (!n || covered.has(n)) return false;
+        return !/schema\.org|openrouter\.ai|googleapis\.com/.test(n);
+      });
       if (missed.length) {
         log.warn(`  深度扫描发现 ${missed.length} 个未被 extractor 采纳的 URL 字段路径,前 8 条:`);
         for (const m of missed.slice(0, 8)) log.warn(`    ${m.path}  →  ${m.url.slice(0, 70)}`);

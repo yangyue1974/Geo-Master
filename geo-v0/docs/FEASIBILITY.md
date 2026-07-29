@@ -253,7 +253,24 @@ fixpack 默认生成 `/releases/{year}` 作为按年份的聚合页,
 - 库是活的:抽到的专辑里有 19 天前发行的
 - robots.txt 干净 —— 没封任何抓取器,而且声明了 sitemap
 
-### 12.5 仍未验证
+### 12.5 尺子实测:spec 的透传断言是错的(2026-07-29)
+
+spec §A4 原文:「`citations` 数组直接给出被引 URL,**经 OpenRouter 完整透传**,量化最干净」。
+
+实测结果:**引用不在 `citations` 字段。** OpenRouter 把 Perplexity 的引用归一化成了
+OpenAI 风格的 `choices[].message.annotations[].url_citation`。字段分布实测为
+`{"annotations.url_citation": 8}`,`body.citations` 一条都没有。
+
+extractor 之所以没事,正是因为它不赌单一字段 —— 按已知路径依次扫,每条记录来源 `via`。
+如果当初按 spec 的字面意思只读 `body.citations`,整批基线会全 0,
+而那个 0 会被读成「我们没被引用」,实际是「尺子没读数」。
+
+这就是把 `verify` 提到基线之前的全部理由,也是它第一次真正兑现。
+
+**另一条也到期了**:`openai/gpt-4o-search-preview` 在 OpenRouter 返回 404,型号已下架。
+引擎型号通过 `GEO_MODEL_*` 环境变量覆盖,不改代码即可换,但每轮复测前都要重跑 `verify` 确认。
+
+### 12.6 仍未验证
 
 - artist 的 JSON-LD 里**没有**专辑列表,`chronology` 能否出题取决于 album 实体的 `facts.artist` 反查。
   129 个歌手 : 58 张专辑,多数歌手名下一张专辑都没有 —— 这一档题量会很少。
