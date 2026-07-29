@@ -37,6 +37,30 @@ const SONGS = [
   { slug: 'homeward', name: 'Homeward', artist: 'Jonah Reeves', album: 'Open Road', albumSlug: 'open-road' },
 ];
 
+/*
+ * 演出场次。刻意让同一个巡演有 3 场(同名、不同日期场馆)——
+ * 用来验证去重不会把它们合并成一个。这正是 GospelHub 上真实发生过的 bug:
+ * 270 个演出页压成 154 个实体,丢掉 43%。
+ * 日期用相对今天的偏移,保证 fixture 永远有"未来场次"而不会随时间过期。
+ */
+const DAY = 86400_000;
+const futureDate = (days: number) => new Date(Date.now() + days * DAY).toISOString().slice(0, 10);
+const pastDate = (days: number) => new Date(Date.now() - days * DAY).toISOString().slice(0, 10);
+
+const CONCERTS = [
+  { slug: 'sos-ny', tour: 'Song of the Saints Tour', performer: 'Mary Hale',
+    date: futureDate(20), venue: 'Beacon Theatre', city: 'New York' },
+  { slug: 'sos-chi', tour: 'Song of the Saints Tour', performer: 'Mary Hale',
+    date: futureDate(24), venue: 'Chicago Theatre', city: 'Chicago' },
+  { slug: 'sos-atl', tour: 'Song of the Saints Tour', performer: 'Mary Hale',
+    date: futureDate(28), venue: 'Fox Theatre', city: 'Atlanta' },
+  { slug: 'cedar-ny', tour: 'Cedar Nights', performer: 'The Cedar Choir',
+    date: futureDate(35), venue: 'Town Hall', city: 'New York' },
+  // 已结束的场次 —— 不应出现在任何 "coming up" 列表里
+  { slug: 'old-show', tour: 'Retired Tour', performer: 'Jonah Reeves',
+    date: pastDate(60), venue: 'Old Hall', city: 'New York' },
+];
+
 export function startFixtureServer(port = 0): Promise<{ server: Server; origin: string }> {
   const server = createServer((req, res) => {
     const origin = `http://127.0.0.1:${(server.address() as { port: number }).port}`;
@@ -61,6 +85,7 @@ export function startFixtureServer(port = 0): Promise<{ server: Server; origin: 
   <sitemap><loc>${origin}/sitemap-artists.xml</loc></sitemap>
   <sitemap><loc>${origin}/sitemap-albums.xml</loc></sitemap>
   <sitemap><loc>${origin}/sitemap-songs.xml</loc></sitemap>
+  <sitemap><loc>${origin}/sitemap-concerts.xml</loc></sitemap>
 </sitemapindex>`,
         'application/xml',
       );
@@ -75,6 +100,9 @@ export function startFixtureServer(port = 0): Promise<{ server: Server; origin: 
     }
     if (url.pathname === '/sitemap-songs.xml') {
       return send(urlset(SONGS.map((s) => `${origin}/song/${s.slug}`)), 'application/xml');
+    }
+    if (url.pathname === '/sitemap-concerts.xml') {
+      return send(urlset(CONCERTS.map((c) => `${origin}/concert/${c.slug}`)), 'application/xml');
     }
 
     // 单独一份含空壳页的 sitemap —— 专门用来验证 audit 的 CSR 检测器,
@@ -102,6 +130,9 @@ export function startFixtureServer(port = 0): Promise<{ server: Server; origin: 
 
     const song = SONGS.find((s) => url.pathname === `/song/${s.slug}`);
     if (song) return send(songPage(song, origin));
+
+    const concert = CONCERTS.find((c) => url.pathname === `/concert/${c.slug}`);
+    if (concert) return send(concertPage(concert, origin));
 
     send('<!doctype html><html><body><h1>Not found</h1></body></html>', 'text/html; charset=utf-8', 404);
   });
@@ -190,5 +221,33 @@ function songPage(s: (typeof SONGS)[number], origin: string): string {
       inAlbum: { '@type': 'MusicAlbum', name: s.album, url: `${origin}/album/${s.albumSlug}` },
     },
     `"${s.name}" by ${s.artist} from ${s.album}.`,
+  );
+}
+
+function concertPage(c: (typeof CONCERTS)[number], origin: string): string {
+  const artist = ARTISTS.find((a) => a.name === c.performer);
+  return page(
+    `${c.tour} — ${c.city} | Fixture Gospel`,
+    c.tour,
+    `<p>${c.performer} performs ${c.tour} at ${c.venue}, ${c.city} on ${c.date}.</p>`,
+    {
+      '@context': 'https://schema.org',
+      '@type': 'MusicEvent',
+      name: c.tour,
+      url: `${origin}/concert/${c.slug}`,
+      eventStatus: 'https://schema.org/EventScheduled',
+      performer: {
+        '@type': 'MusicGroup',
+        name: c.performer,
+        ...(artist ? { url: `${origin}/artist/${artist.slug}` } : {}),
+      },
+      startDate: c.date,
+      location: {
+        '@type': 'Place',
+        name: c.venue,
+        address: { '@type': 'PostalAddress', addressLocality: c.city, addressCountry: 'USA' },
+      },
+    },
+    `${c.tour} on ${c.date} at ${c.venue}, ${c.city}.`,
   );
 }

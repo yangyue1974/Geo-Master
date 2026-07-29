@@ -12,12 +12,15 @@
     { "type": "album", "pattern": "/releases/*" }
   ],
 
-  "_comment_aggregatePaths": "默认的 /releases/{year} 会撞上专辑详情页的 /releases/{uuid} 命名空间,必须改掉。路径顺带写成可读的答案形态,对被引用有帮助。",
+  "_comment_aggregatePaths": "默认的 /releases/{year} 会撞上专辑详情页的 /releases/{uuid} 命名空间,必须改掉;/concerts/{month} 同理会撞 /concerts/{uuid}。路径顺带写成可读的答案形态,对被引用有帮助。",
   "aggregatePaths": {
     "year": "/gospel-albums/{year}",
     "theme": "/gospel-songs-about/{theme}",
     "collab": "/collaborations/{artist}",
-    "newReleases": "/new-releases"
+    "newReleases": "/new-releases",
+    "city": "/gospel-concerts-in/{city}",
+    "month": "/gospel-concerts/{month}",
+    "artistTour": "/tour/{artist}"
   },
 
   "vertical": {

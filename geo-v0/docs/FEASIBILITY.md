@@ -196,6 +196,72 @@ spec 说「对 GospelHub 额外生成可直接合并的代码改动」。
 
 ---
 
+---
+
+## 12. 线上实测推翻的两个假设(2026-07-29)
+
+对 gospelhub.love 实跑 `--propose` 与 `extract` 之后,有两件事和 spec 的设想不同。
+
+### 12.1 这个站的主体是演出,不是专辑
+
+sitemap 461 个 URL:`/concerts/` 270、`/artists/` 129、`/releases/` 58,**没有独立歌曲页**。
+spec 假设的 artist / album / song 音乐库只对上了一部分,而最大的一类 —— 演出 —— 完全没被预见。
+
+这不是坏消息。演出同时占满三个可赢维度:
+
+- **地域**:「纽约有哪些 gospel 演出」
+- **时间窗口**:「八月有哪些」—— 而且都是未来的日期,维基百科在这一档不是滞后,是根本没有
+- **实体关系**:`performer` 字段带 URL,把演出和歌手连起来 ——「X 接下来在哪演」
+
+三类问题都没有任何百科页面能回答,引擎必须找一个现成的列表页。这比专辑元数据好赢得多。
+
+因此新增:
+- 事实抽取支持 `MusicEvent`(`startDate` / `venue` / `city` / `country` / `performer` / `performerUrl`)
+- 三个题库模板:`artist-touring`(fresh,entity-relative)、`concerts-city`、`concerts-month`(aggregate)
+- 三类聚合页:按城市、按月份、按歌手的巡演页
+
+两条约束照旧:只收**未来**的场次(列一堆过期演出会直接损害页面的可引用性);
+月份写进题面(`August 2026` 而不是「本月」),让这道题在复测时仍问同一件事。
+
+`ENTITY_TYPES` 里 `MusicEvent` 必须排在 `MusicGroup` 之前 —— 演出页的 JSON-LD 里嵌了一个
+`MusicGroup` 的 performer,顺序反了就会把演出者当成实体本身。
+
+### 12.2 去重把 43% 的演出场次静默丢掉了
+
+原来的去重键是「类型 + 名称」。对歌手和专辑成立,对**事件不成立**:
+一个巡演有很多场,每场标题相同但日期场馆不同。270 个演出页只有 154 个不同标题,
+按名字去重直接丢掉 116 场 —— 而那正是 fresh 档最值钱的数据。
+
+修法:key 里加**身份判别符** —— 能区分两个同名实体是否为同一事物的事实(`startDate` / `venue` / `city`)。
+歌手没有这些字段,行为与从前一致(取事实最丰富的那份);演出有,于是同一巡演的不同场次各自保留。
+
+刻意不把 `description` / `genre` 放进 key:它们的差异是丰富度差异,不是身份差异。
+
+### 12.3 顺带修掉的路径撞车
+
+fixpack 默认生成 `/releases/{year}` 作为按年份的聚合页,
+但 `/releases/*` 已经是这个站专辑详情页的命名空间。撞车在两个方向上都是静默的:
+新页面被现有路由吃掉,而且下一轮抽取会把聚合页当成实体收进 entities.json。
+
+聚合页路径改成 site profile 上的可配置模板,`buildFixpack` 在任何 IO 之前检查冲突并拒绝生成。
+
+### 12.4 已确认成立的部分
+
+- 实体名是真名,不是 UUID(页面 JSON-LD 完整)
+- `sameAs` 指向 Wikipedia / Spotify / Apple —— 这些歌手都有维基条目,**control 档必输的预判有了实证依据**
+- 专辑有 `artist` + `datePublished`,`release` / `year-list` / `chronology` 三个模板有支撑
+- 库是活的:抽到的专辑里有 19 天前发行的
+- robots.txt 干净 —— 没封任何抓取器,而且声明了 sitemap
+
+### 12.5 仍未验证
+
+- artist 的 JSON-LD 里**没有**专辑列表,`chronology` 能否出题取决于 album 实体的 `facts.artist` 反查。
+  129 个歌手 : 58 张专辑,多数歌手名下一张专辑都没有 —— 这一档题量会很少。
+- 实体页的裸 HTML 渲染状况(B5 的 CSR 检查)还没在配好 `entityPatterns` 之后重跑过。
+- 引擎透传(`geo verify`)一次都还没跑 —— 尺子尚未验证。
+
+---
+
 ## 已知的、没有解决的问题
 
 1. **API 端 ≠ 客户端。** ChatGPT / Perplexity 网页端与 API 端走的不是同一条检索链路。

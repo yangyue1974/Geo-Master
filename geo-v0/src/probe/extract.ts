@@ -134,15 +134,39 @@ async function extractFromSitemap(site: SiteProfile, opts: ExtractOpts): Promise
   bar.done();
   await writeJson(cachePath, cache, false);
 
-  // 去重(同名同类型只留事实最丰富的那个)
+  const deduped = dedupe(results as Entity[]);
+  const dropped = results.length - deduped.length;
+  if (dropped > 0) log.info(`  去重合并 ${dropped} 个同一实体的重复页面`);
+  return deduped;
+}
+
+/**
+ * 去重。
+ *
+ * 「同类型同名 = 同一个实体」对歌手和专辑成立,对**事件不成立**:
+ * 一个巡演有很多场,每场标题相同但日期场馆不同。GospelHub 上 270 个演出页里
+ * 只有 154 个不同标题 —— 按名字去重会静默丢掉 43% 的场次,而那正是 fresh 档最值钱的数据。
+ *
+ * 所以 key 里加上**身份判别符**:能区分两个同名实体是否为同一事物的事实(日期、场馆)。
+ * 歌手没有这些字段,行为与从前一致(取事实最丰富的那份);
+ * 演出有,于是同一巡演的不同场次各自保留。
+ */
+function dedupe(entities: Entity[]): Entity[] {
   const byKey = new Map<string, Entity>();
-  for (const r of results as Entity[]) {
+  for (const r of entities) {
     if (!r.name) continue;
-    const key = `${r.type}::${r.name.toLowerCase()}`;
+    const key = [r.type, r.name.toLowerCase(), identityDiscriminator(r)].join('::');
     const prev = byKey.get(key);
     if (!prev || factRichness(r) > factRichness(prev)) byKey.set(key, r);
   }
   return [...byKey.values()];
+}
+
+function identityDiscriminator(e: Entity): string {
+  const f = e.facts;
+  if (!f) return '';
+  // 只用身份性事实。描述、genre 这类不进 key —— 它们的差异是丰富度差异,不是身份差异。
+  return [f.startDate ?? '', f.venue ?? '', f.city ?? ''].join('|').replace(/^\|+$/, '');
 }
 
 function factRichness(e: Entity): number {
@@ -155,6 +179,10 @@ function factRichness(e: Entity): number {
   n += (f.tracks?.length ?? 0) > 0 ? 3 : 0;
   n += (f.genre?.length ?? 0) > 0 ? 1 : 0;
   n += (f.sameAs?.length ?? 0) > 0 ? 1 : 0;
+  if (f.startDate) n += 2;
+  if (f.venue) n += 1;
+  if (f.city) n += 1;
+  if (f.performer) n += 2;
   if (f.description) n += 1;
   if (f._source?.includes('jsonld')) n += 2;
   return n;

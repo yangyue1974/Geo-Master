@@ -47,6 +47,32 @@ export function extractFromHtml(html: string, url: string): ExtractedEntity {
     const byArtist = node.byArtist as Record<string, unknown> | undefined;
     if (byArtist && typeof byArtist.name === 'string') facts.artist = byArtist.name.trim();
 
+    // ---- 事件类字段 ----
+    if (typeof node.startDate === 'string') facts.startDate = node.startDate.trim();
+    if (typeof node.endDate === 'string') facts.endDate = node.endDate.trim();
+
+    // performer 可能是单个对象或数组;只取第一个,多演出者的场次在 v0 不展开
+    const performer = firstObject(node.performer);
+    if (performer) {
+      if (typeof performer.name === 'string') facts.performer = performer.name.trim();
+      const pu = typeof performer.url === 'string' ? normalizeUrl(performer.url) : null;
+      if (pu) facts.performerUrl = pu;
+    }
+
+    const place = firstObject(node.location);
+    if (place) {
+      if (typeof place.name === 'string') facts.venue = place.name.trim();
+      const addr = firstObject(place.address);
+      if (addr) {
+        if (typeof addr.addressLocality === 'string') facts.city = addr.addressLocality.trim();
+        if (typeof addr.addressRegion === 'string') facts.region = addr.addressRegion.trim();
+        if (typeof addr.addressCountry === 'string') facts.country = addr.addressCountry.trim();
+      } else if (typeof place.address === 'string') {
+        // 地址是一整个字符串时不拆 —— 拆是猜,猜就会把城市填错
+        facts.city = undefined;
+      }
+    }
+
     const albums = asItemArray(node.album ?? node.albums);
     if (albums.length) facts.albums = albums;
 
@@ -126,7 +152,14 @@ function flatten(v: unknown, out: Record<string, unknown>[]): void {
   }
 }
 
+/*
+ * 顺序即优先级。事件类必须排在 MusicGroup 之前:
+ * 演出页的 JSON-LD 是 MusicEvent,里面嵌了一个 MusicGroup 的 performer。
+ * 如果 MusicGroup 排前面,拿到的会是演出者而不是演出本身。
+ */
 const ENTITY_TYPES = [
+  'MusicEvent',
+  'Event',
   'MusicGroup',
   'MusicAlbum',
   'MusicRecording',
@@ -160,6 +193,12 @@ function typeIncludes(t: unknown, want: string): boolean {
   if (typeof t === 'string') return t === want || t.endsWith('/' + want);
   if (Array.isArray(t)) return t.some((x) => typeIncludes(x, want));
   return false;
+}
+
+/** JSON-LD 里同一个字段可能是对象或对象数组。只取第一个,不合并。 */
+function firstObject(v: unknown): Record<string, unknown> | null {
+  const x = Array.isArray(v) ? v[0] : v;
+  return x && typeof x === 'object' ? (x as Record<string, unknown>) : null;
 }
 
 function asStringArray(v: unknown): string[] {

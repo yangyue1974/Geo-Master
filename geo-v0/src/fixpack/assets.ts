@@ -19,7 +19,7 @@ export interface FaqBlock {
 }
 
 export interface AggregatePage {
-  kind: 'year' | 'theme' | 'collab';
+  kind: 'year' | 'theme' | 'collab' | 'city' | 'month' | 'artist-tour';
   path: string;
   h1: string;
   intro: string;
@@ -118,6 +118,9 @@ export const DEFAULT_AGGREGATE_PATHS = {
   theme: '/themes/{theme}',
   collab: '/collaborations/{artist}',
   newReleases: '/new-releases',
+  city: '/concerts-in/{city}',
+  month: '/concerts/{month}',
+  artistTour: '/tour/{artist}',
 } as const;
 
 export function aggregatePathTemplates(site: SiteProfile) {
@@ -234,6 +237,94 @@ export function buildAggregatePages(
     });
   }
 
+  pages.push(...buildConcertPages(entities, site, tpl, origin, noun));
+  return pages;
+}
+
+/**
+ * 演出聚合页。
+ *
+ * spec 没有预见到这类页面 —— 它假设的是 artist/album/song 音乐库。
+ * 但演出同时占满三个可赢维度:地域(某城市)、时间窗口(某月)、实体关系(某歌手的巡演),
+ * 而且没有任何百科页面覆盖「下个月纽约有哪些 gospel 演出」这种问题。
+ *
+ * 只收未来的场次。已经结束的演出不该出现在"coming up"的列表里,
+ * 而列一堆过期演出会直接损害页面的可引用性。
+ */
+function buildConcertPages(
+  entities: Entity[],
+  site: SiteProfile,
+  tpl: ReturnType<typeof aggregatePathTemplates>,
+  origin: string,
+  noun: string,
+): AggregatePage[] {
+  const pages: AggregatePage[] = [];
+  const upcoming = entities
+    .filter((e) => e.type === 'concert' && isUpcomingDate(e.facts?.startDate))
+    .sort((a, b) => (a.facts!.startDate! < b.facts!.startDate! ? -1 : 1));
+  if (upcoming.length === 0) return pages;
+
+  const describe = (e: Entity) => {
+    const f = e.facts!;
+    return [f.performer, f.startDate, [f.venue, f.city].filter(Boolean).join(', ')]
+      .filter(Boolean)
+      .join(' · ');
+  };
+
+  // --- 按城市 ---
+  for (const [city, list] of groupBy(upcoming, (e) => e.facts?.city)) {
+    if (list.length < 2) continue;
+    const path = tpl.city.replace('{city}', slugify(city));
+    const h1 = `${cap(noun)} concerts in ${city}`;
+    const items = list.map((e) => ({ name: e.name, url: e.url, description: describe(e) }));
+    pages.push({
+      kind: 'city',
+      path,
+      h1,
+      intro:
+        `${list.length} upcoming ${noun} concert${list.length > 1 ? 's' : ''} in ${city}, ` +
+        `from the ${site.siteName} database. Dates, venues and performers below.`,
+      items,
+      jsonLd: buildItemListJsonLd(h1, origin + path, items),
+    });
+  }
+
+  // --- 按月份 ---
+  for (const [ym, list] of groupBy(upcoming, (e) => e.facts?.startDate?.slice(0, 7))) {
+    if (list.length < 2) continue;
+    const path = tpl.month.replace('{month}', ym);
+    const h1 = `${cap(noun)} concerts in ${monthLabel(ym)}`;
+    const items = list.map((e) => ({ name: e.name, url: e.url, description: describe(e) }));
+    pages.push({
+      kind: 'month',
+      path,
+      h1,
+      intro:
+        `${list.length} ${noun} concert${list.length > 1 ? 's' : ''} scheduled for ${monthLabel(ym)}, ` +
+        `from the ${site.siteName} database.`,
+      items,
+      jsonLd: buildItemListJsonLd(h1, origin + path, items),
+    });
+  }
+
+  // --- 按歌手(巡演页) ---
+  for (const [artist, list] of groupBy(upcoming, (e) => e.facts?.performer)) {
+    if (list.length < 2) continue;
+    const path = tpl.artistTour.replace('{artist}', slugify(artist));
+    const h1 = `${artist} tour dates`;
+    const items = list.map((e) => ({ name: e.name, url: e.url, description: describe(e) }));
+    pages.push({
+      kind: 'artist-tour',
+      path,
+      h1,
+      intro:
+        `${artist} has ${list.length} upcoming ${noun} concert dates listed on ${site.siteName}, ` +
+        `running from ${list[0]!.facts!.startDate} to ${list[list.length - 1]!.facts!.startDate}.`,
+      items,
+      jsonLd: buildItemListJsonLd(h1, origin + path, items),
+    });
+  }
+
   return pages;
 }
 
@@ -296,6 +387,34 @@ function parseDate(s: string | undefined): Date | null {
   if (!s) return null;
   const d = new Date(s.length === 4 ? `${s}-01-01` : s);
   return Number.isNaN(d.getTime()) ? null : d;
+}
+
+function groupBy(items: Entity[], keyOf: (e: Entity) => string | undefined): [string, Entity[]][] {
+  const m = new Map<string, Entity[]>();
+  for (const it of items) {
+    const k = keyOf(it)?.trim();
+    if (!k) continue; // 分组值缺失就丢弃,不归入"其他" —— "其他"页面没有可引用价值
+    if (!m.has(k)) m.set(k, []);
+    m.get(k)!.push(it);
+  }
+  return [...m.entries()].sort((a, b) => b[1].length - a[1].length);
+}
+
+function isUpcomingDate(date: string | undefined, now = new Date()): boolean {
+  if (!date) return false;
+  const d = new Date(date.length === 7 ? `${date}-01` : date);
+  return !Number.isNaN(d.getTime()) && d >= new Date(now.toISOString().slice(0, 10));
+}
+
+const MONTH_NAMES = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+];
+
+function monthLabel(ym: string): string {
+  const [y, m] = ym.split('-');
+  const idx = Number(m) - 1;
+  return MONTH_NAMES[idx] ? `${MONTH_NAMES[idx]} ${y}` : ym;
 }
 
 export function slugify(s: string): string {

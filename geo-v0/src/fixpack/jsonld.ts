@@ -22,6 +22,9 @@ export function buildEntityJsonLd(e: Entity, site: SiteProfile): JsonLd | null {
     case 'song':
     case 'track':
       return songJsonLd(e, site);
+    case 'concert':
+    case 'event':
+      return eventJsonLd(e, site);
     default:
       return genericJsonLd(e, site);
   }
@@ -93,6 +96,46 @@ function songJsonLd(e: Entity, site: SiteProfile): JsonLd | null {
     ld.inAlbum = alb;
   }
   if (f.datePublished) ld.datePublished = f.datePublished;
+  if (f.description) ld.description = f.description;
+  return ld;
+}
+
+/**
+ * 演出场次。
+ *
+ * 场次的身份是「日期 + 场馆」,所以没有 startDate 的记录不生成标记 ——
+ * 一个没有日期的 MusicEvent 对引擎毫无用处,反而会稀释真正有日期的那些。
+ */
+function eventJsonLd(e: Entity, site: SiteProfile): JsonLd | null {
+  if (!e.name) return null;
+  const f = e.facts ?? {};
+  if (!f.startDate) return null;
+
+  const ld: JsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'MusicEvent',
+    name: e.name,
+    url: e.url,
+    startDate: f.startDate,
+  };
+  if (f.endDate) ld.endDate = f.endDate;
+  if (f.performer) {
+    const p: JsonLd = { '@type': 'MusicGroup', name: f.performer };
+    if (f.performerUrl) p.url = f.performerUrl;
+    ld.performer = p;
+  }
+  if (f.venue || f.city) {
+    const place: JsonLd = { '@type': 'Place' };
+    if (f.venue) place.name = f.venue;
+    if (f.city || f.region || f.country) {
+      const addr: JsonLd = { '@type': 'PostalAddress' };
+      if (f.city) addr.addressLocality = f.city;
+      if (f.region) addr.addressRegion = f.region;
+      if (f.country) addr.addressCountry = f.country;
+      place.address = addr;
+    }
+    ld.location = place;
+  }
   if (f.description) ld.description = f.description;
   return ld;
 }

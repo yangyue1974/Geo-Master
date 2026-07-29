@@ -219,6 +219,36 @@ export async function generateQueries(site: SiteProfile, opts: QueryOpts = {}): 
     });
   }
 
+  // 演出类聚合题。演出天然是地域的和时间窗口的,而且没有任何百科页面能回答 ——
+  // 引擎回答这类问题时必须找一个现成的列表页,这正是我们要提供的形态。
+  const concerts = entities.filter((e) => e.type === 'concert' && e.facts?.startDate);
+  const upcoming = concerts.filter((e) => isUpcoming(e.facts?.startDate));
+
+  for (const [city, list] of topGroups(upcoming, (e) => e.facts?.city, 8)) {
+    if (list.length < 2) continue;
+    aggCandidates.push({
+      tier: 'aggregate',
+      template: 'concerts-city',
+      entity: null,
+      query: `What ${noun} concerts are coming up in ${city}?`.replace(/\s+/g, ' '),
+      timeSensitivity: 'window',
+      basis: { city, knownConcerts: String(list.length) },
+    });
+  }
+
+  for (const [ym, list] of topGroups(upcoming, (e) => e.facts?.startDate?.slice(0, 7), 6)) {
+    if (list.length < 2) continue;
+    aggCandidates.push({
+      tier: 'aggregate',
+      template: 'concerts-month',
+      entity: null,
+      query: `What ${noun} concerts are happening in ${monthName(ym)}?`.replace(/\s+/g, ' '),
+      // 月份写死在题面里,所以它反而是可比的 —— 与「本月」那种相对表述不同
+      timeSensitivity: 'none',
+      basis: { month: ym, knownConcerts: String(list.length) },
+    });
+  }
+
   pushAll(queries, balancedPick(aggCandidates, sampling.aggregate, seed + ':aggregate'));
 
   // ---- fresh: 必须拆成两类,否则 Day 30 的对比是无效的 ----
@@ -234,6 +264,28 @@ export async function generateQueries(site: SiteProfile, opts: QueryOpts = {}): 
       query: `What is ${ar.name}'s latest single or album?`,
       timeSensitivity: 'entity-relative',
       basis: { artist: ar.name },
+    });
+  }
+
+  // 巡演题。实体固定,问的是"这个人接下来在哪演" —— 语义随时间推进但前后可比。
+  // 只给确实有已知场次的歌手出题,没场次就不问。
+  const concertsByArtist = new Map<string, number>();
+  for (const c of entities) {
+    if (c.type !== 'concert' || !isUpcoming(c.facts?.startDate)) continue;
+    const p = c.facts?.performer;
+    if (p) concertsByArtist.set(p, (concertsByArtist.get(p) ?? 0) + 1);
+  }
+  for (const ar of artists) {
+    const n = concertsByArtist.get(ar.name);
+    if (!n) continue;
+    freshCandidates.push({
+      tier: 'fresh',
+      template: 'artist-touring',
+      entity: ar.name,
+      entityUrl: ar.url,
+      query: `Where is ${ar.name} playing live next?`,
+      timeSensitivity: 'entity-relative',
+      basis: { artist: ar.name, knownUpcoming: String(n) },
     });
   }
 
@@ -356,6 +408,37 @@ function collectYears(albums: Entity[]): string[] {
 
 function cap(s: string): string {
   return s ? s[0]!.toUpperCase() + s.slice(1) : s;
+}
+
+/** 演出题只问未来的场次 —— 问一场已经结束的演出没有意义,也不该期望被引用。 */
+export function isUpcoming(date: string | undefined, now = new Date()): boolean {
+  if (!date) return false;
+  const d = new Date(date.length === 7 ? `${date}-01` : date);
+  return !Number.isNaN(d.getTime()) && d >= new Date(now.toISOString().slice(0, 10));
+}
+
+/** 按 key 分组,取样本量最大的前 N 组。分组值为空的直接丢弃,不归入"其他"。 */
+function topGroups<T>(items: T[], keyOf: (x: T) => string | undefined, n: number): [string, T[]][] {
+  const m = new Map<string, T[]>();
+  for (const it of items) {
+    const k = keyOf(it)?.trim();
+    if (!k) continue;
+    if (!m.has(k)) m.set(k, []);
+    m.get(k)!.push(it);
+  }
+  return [...m.entries()].sort((a, b) => b[1].length - a[1].length).slice(0, n);
+}
+
+const MONTHS = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+];
+
+/** "2026-08" → "August 2026"。月份写进题面,让这道题在复测时仍问同一件事。 */
+function monthName(ym: string): string {
+  const [y, m] = ym.split('-');
+  const idx = Number(m) - 1;
+  return MONTHS[idx] ? `${MONTHS[idx]} ${y}` : ym;
 }
 
 /**

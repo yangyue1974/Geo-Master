@@ -21,7 +21,12 @@ export type TemplateId =
   | 'theme'
   | 'collab'
   | 'latest'
-  | 'new-releases';
+  | 'new-releases'
+  // 事件类。spec 假设的是 artist/album/song 音乐库,没有预见到演出 ——
+  // 而演出天然是时效的、地域的、列表形态的,是 fresh / aggregate 两档最好赢的一类。
+  | 'artist-touring'
+  | 'concerts-city'
+  | 'concerts-month';
 
 /**
  * 时效性分类 —— spec 原文没有这一层,但 fresh 档必须拆。
@@ -42,6 +47,18 @@ export interface EntityFacts {
   genre?: string[];
   sameAs?: string[];
   description?: string;
+
+  // ---- 事件类(MusicEvent / Event)。演出场次的身份由 startDate + venue 共同决定。 ----
+  startDate?: string;
+  endDate?: string;
+  venue?: string;
+  city?: string;
+  region?: string;
+  country?: string;
+  /** 演出者。带 URL 时就是演出与歌手之间那条边 —— fresh 档的全部价值都建立在它上面。 */
+  performer?: string;
+  performerUrl?: string;
+
   /** 事实来源,用于判断可信度: jsonld > microdata > heuristic */
   _source?: ('jsonld' | 'microdata' | 'heuristic' | 'db')[];
 }
@@ -238,6 +255,12 @@ export interface SiteProfile {
     collab?: string;
     /** fresh 档的新发行页 */
     newReleases?: string;
+    /** 含 {city} */
+    city?: string;
+    /** 含 {month},形如 2026-08 */
+    month?: string;
+    /** 含 {artist} */
+    artistTour?: string;
   };
   /** 可选:db 捷径模式的表映射 */
   supabase?: {

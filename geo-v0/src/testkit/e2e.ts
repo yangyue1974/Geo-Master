@@ -57,6 +57,7 @@ async function main() {
         { type: 'artist', pattern: '/artist/*' },
         { type: 'album', pattern: '/album/*' },
         { type: 'song', pattern: '/song/*' },
+        { type: 'concert', pattern: '/concert/*' },
       ],
       vertical: { noun: 'gospel', themes: ['hope', 'grief', 'family'] },
       sampling: { control: 3, detail: 12, aggregate: 12, fresh: 5 },
@@ -67,7 +68,27 @@ async function main() {
     // ---------------- A1 ----------------
     log.step('A1 实体抽取');
     const ents = await extractEntities(site, { source: 'sitemap', concurrency: 4 });
-    check(ents.entities.length === 10, `抽到 10 个实体(实际 ${ents.entities.length})`);
+    check(ents.entities.length === 15, `抽到 15 个实体(实际 ${ents.entities.length})`);
+
+    // 关键断言:同一巡演的 3 场同名演出必须全部保留。
+    // 按名字去重会把它们压成 1 个 —— 这是 GospelHub 上真实丢掉 43% 场次的那个 bug。
+    const sos = ents.entities.filter((e) => e.type === 'concert' && e.name === 'Song of the Saints Tour');
+    check(sos.length === 3, `同名巡演的 3 场各自保留(实际 ${sos.length})`);
+    check(
+      new Set(sos.map((e) => e.facts?.startDate)).size === 3,
+      '3 场的日期各不相同(身份判别符生效)',
+    );
+
+    // 关键断言:MusicEvent 的字段必须抽全,否则演出实体就是只有名字的空壳
+    const ny = sos.find((e) => e.facts?.city === 'New York');
+    check(!!ny?.facts?.startDate, 'concert 抽到 startDate');
+    check(ny?.facts?.venue === 'Beacon Theatre', `concert 抽到 venue(实际 ${ny?.facts?.venue})`);
+    check(ny?.facts?.country === 'USA', 'concert 抽到 country');
+    check(
+      ny?.facts?.performer === 'Mary Hale',
+      `concert 抽到 performer 而不是被嵌套的 MusicGroup 顶掉(实际 ${ny?.facts?.performer})`,
+    );
+    check(!!ny?.facts?.performerUrl, 'concert 抽到 performerUrl —— 演出与歌手之间那条边');
     const mary = ents.entities.find((e) => e.name === 'Mary Hale');
     check(!!mary, 'Mary Hale 被抽到');
     check(mary?.facts?.albums?.length === 2, `Mary Hale 有 2 张专辑(实际 ${mary?.facts?.albums?.length})`);
@@ -167,7 +188,15 @@ async function main() {
     check(passedAfterFix, '改掉 aggregatePaths 之后放行');
     const outDir = await buildFixpack(site, { newReleaseDays: 100000 }); // fixture 数据是历史日期,放宽窗口
     const jsonld = await readJson<Record<string, any>>(`${outDir}/data/jsonld-by-url.json`);
-    check(Object.keys(jsonld).length === 10, `10 个实体都有 JSON-LD(实际 ${Object.keys(jsonld).length})`);
+    check(Object.keys(jsonld).length === 15, `15 个实体都有 JSON-LD(实际 ${Object.keys(jsonld).length})`);
+
+    const concertLd = jsonld[`${origin}/concert/sos-ny`];
+    check(concertLd?.['@type'] === 'MusicEvent', 'concert → MusicEvent(不是降级成 Thing)');
+    check(concertLd?.performer?.name === 'Mary Hale', 'concert JSON-LD 含 performer');
+    check(
+      concertLd?.location?.address?.addressLocality === 'New York',
+      'concert JSON-LD 含 location.address.addressLocality',
+    );
 
     const maryLd = jsonld[`${origin}/artist/mary-hale`];
     check(maryLd?.['@type'] === 'MusicGroup', 'artist → MusicGroup');
@@ -193,6 +222,33 @@ async function main() {
     check(
       !aggs.some((a) => a.path === '/releases/2021'),
       '2021 年只有 1 张专辑,不生成聚合页(一张不构成列表)',
+    );
+
+    // 演出聚合页 —— 三个可赢维度各一类
+    const nyPage = aggs.find((a) => a.kind === 'city' && /new-york/.test(a.path));
+    check(!!nyPage, '生成了按城市的演出聚合页');
+    check(nyPage?.items?.length === 2, `纽约页含 2 场未来演出(实际 ${nyPage?.items?.length})`);
+    check(
+      !JSON.stringify(nyPage ?? {}).includes('Retired Tour'),
+      '已结束的演出不出现在 coming up 列表里',
+    );
+    check(aggs.some((a) => a.kind === 'month'), '生成了按月份的演出聚合页');
+    const tour = aggs.find((a) => a.kind === 'artist-tour');
+    check(!!tour, '生成了歌手巡演页');
+    check(tour?.items?.length === 3, `Mary Hale 巡演页含 3 场(实际 ${tour?.items?.length})`);
+
+    // 演出题库
+    const cq = qf.queries.filter((q) => q.template === 'concerts-city');
+    const tq = qf.queries.filter((q) => q.template === 'artist-touring');
+    check(cq.length > 0, `生成了 ${cq.length} 道城市演出题`);
+    check(tq.length > 0, `生成了 ${tq.length} 道巡演题`);
+    check(
+      qf.queries.filter((q) => q.template === 'concerts-month').every((q) => /\b(19|20)\d{2}\b/.test(q.query)),
+      '月份演出题的题面写死了年月(复测时仍问同一件事)',
+    );
+    check(
+      !tq.some((q) => q.entity === 'Jonah Reeves'),
+      'Jonah Reeves 只有已结束的演出,不给他出巡演题(无数据不提问)',
     );
 
     const faqs = await readJson<any[]>(`${outDir}/data/faq-blocks.json`);

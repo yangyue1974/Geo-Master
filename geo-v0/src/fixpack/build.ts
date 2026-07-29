@@ -151,6 +151,9 @@ function assertNoPathCollision(site: SiteProfile): void {
     { kind: 'theme', path: tpl.theme.replace('{theme}', 'hope') },
     { kind: 'collab', path: tpl.collab.replace('{artist}', 'example-artist') },
     { kind: 'newReleases', path: tpl.newReleases },
+    { kind: 'city', path: tpl.city.replace('{city}', 'new-york') },
+    { kind: 'month', path: tpl.month.replace('{month}', '2026-08') },
+    { kind: 'artistTour', path: tpl.artistTour.replace('{artist}', 'example-artist') },
   ];
 
   const hits = samples.flatMap((s) => {
