@@ -1,4 +1,5 @@
 import { fetchWithRetry } from '../../util/http.js';
+import { log } from '../../util/log.js';
 import { env, requireEnv, MODELS } from '../../config.js';
 import { extractCitations } from './extract.js';
 import type { Citation, EngineId } from '../../types.js';
@@ -26,11 +27,27 @@ const REFERER_HEADERS = {
 };
 
 /**
+ * 型号必须钉死具体版本。
+ *
+ * `-latest` / `-preview` 这类别名背后的模型会在实验期内被替换,
+ * 而整个实验的结论建立在"D0 / D15 / D30 用的是同一把尺子"上。
+ * 别名换了不会报错,只会让前后对比悄悄变成两台不同引擎的比较 —— 那份 diff 看起来完全正常。
+ */
+function warnIfFloatingModel(model: string): void {
+  if (/-latest$/.test(model)) {
+    log.warn(
+      `型号 ${model} 是浮动别名,背后的模型会变。复测之间换了模型,前后对比就不成立 —— 建议钉死具体版本。`,
+    );
+  }
+}
+
+/**
  * 禁令(spec §A4):不得使用 OpenRouter 的 `:online` 网页插件。
  * 它把第三方搜索索引外挂到任意模型上,测出的是那家索引的收录情况而非目标引擎自身的检索。
  * 这个断言在构造时检查 —— 让"尺子即错"这件事在跑之前就炸,而不是跑完 600 次调用之后。
  */
 function assertNativeRetrieval(model: string): void {
+  warnIfFloatingModel(model);
   if (model.includes(':online') || model.endsWith('/online')) {
     throw new Error(
       `拒绝使用 ${model}:':online' 插件测的是第三方索引的收录情况,不是目标引擎自身的检索。尺子即错。`,
@@ -207,6 +224,7 @@ export function geminiEngine(): Engine {
     available: () => !!env('GEMINI_API_KEY'),
     async ask(query) {
       const key = requireEnv('GEMINI_API_KEY', 'Gemini grounding 直连 Google,不走 OpenRouter');
+      warnIfFloatingModel(model);
       const url =
         `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
       const res = await fetchWithRetry(url, {
