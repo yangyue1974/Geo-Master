@@ -53,7 +53,15 @@ export async function fetchWithRetry(url: string, opts: FetchOpts = {}): Promise
       // 4xx(除 408/429)是请求本身的问题,重试无意义
       if (res.status >= 400 && res.status < 500 && res.status !== 408 && res.status !== 429) {
         const body = await res.text().catch(() => '');
-        throw new HttpError(`HTTP ${res.status} ${url}`, res.status, body.slice(0, 2000));
+        /*
+         * 响应体进 message。上游对"型号不存在""参数不认""key 没权限"往往一律回 4xx,
+         * 只报状态码等于把唯一有用的信息丢掉,然后靠人一轮轮猜。
+         */
+        throw new HttpError(
+          `HTTP ${res.status} ${url}\n    ${body.replace(/\s+/g, ' ').slice(0, 600)}`,
+          res.status,
+          body.slice(0, 2000),
+        );
       }
 
       const body = await res.text().catch(() => '');
