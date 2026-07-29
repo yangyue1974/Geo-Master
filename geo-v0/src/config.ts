@@ -21,7 +21,17 @@ export async function loadEnv(): Promise<void> {
     if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) {
       v = v.slice(1, -1);
     }
-    if (k && process.env[k] === undefined) process.env[k] = v;
+    /*
+     * 空值视同未设置。
+     *
+     * .env.example 里的占位行(`INDEXNOW_KEY=`)会先把变量设成空字符串,
+     * 之后追加的真值就因为"已存在"被跳过 —— 而 env() 对空字符串返回 undefined,
+     * 于是程序报"未设置",文件里却明明写着。cp .env.example .env 再追加值是最常见的用法,
+     * 所以这条必须成立:后面的非空值覆盖前面的空值。
+     */
+    if (!k) continue;
+    const existing = process.env[k];
+    if (existing === undefined || existing.trim() === '') process.env[k] = v;
   }
 }
 
