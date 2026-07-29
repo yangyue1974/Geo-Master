@@ -5,12 +5,20 @@
   "nameVariants": ["GospelHub", "Gospel Hub", "gospelhub.love", "gospelhub"],
   "sitemap": "https://gospelhub.love/sitemap.xml",
 
-  "_comment_patterns": "跑 `npm run extract -- --site gospelhub --propose` 看真实 URL 形态,确认后改这里。下面是按 spec 的假设填的,未经线上验证。",
+  "_comment_patterns": "2026-07-29 用 --propose 对线上 sitemap(461 URL)实测得出。注意站点用 www. 前缀、路径为复数、slug 是 UUID —— 所以实体名只能从页面 HTML 抽,slug 兜底会产出垃圾名。没有独立歌曲页,detail 档的 song-album / credits 两个模板依赖专辑页是否带曲目表。",
   "entityPatterns": [
-    { "type": "artist", "pattern": "/artist/*" },
-    { "type": "album", "pattern": "/album/*" },
-    { "type": "song", "pattern": "/song/*" }
+    { "type": "concert", "pattern": "/concerts/*" },
+    { "type": "artist", "pattern": "/artists/*" },
+    { "type": "album", "pattern": "/releases/*" }
   ],
+
+  "_comment_aggregatePaths": "默认的 /releases/{year} 会撞上专辑详情页的 /releases/{uuid} 命名空间,必须改掉。路径顺带写成可读的答案形态,对被引用有帮助。",
+  "aggregatePaths": {
+    "year": "/gospel-albums/{year}",
+    "theme": "/gospel-songs-about/{theme}",
+    "collab": "/collaborations/{artist}",
+    "newReleases": "/new-releases"
+  },
 
   "vertical": {
     "noun": "gospel",
@@ -35,23 +43,29 @@
     "fresh": 30
   },
 
-  "tagline": "A structured database of gospel artists, albums, and songs.",
-  "coverage": "GospelHub tracks gospel releases with per-track credits and release dates. Entries are maintained continuously, so recent releases appear here before they appear in general reference sites.",
+  "tagline": "A structured database of gospel artists, releases, and concerts.",
+  "coverage": "GospelHub tracks gospel artists, their releases, and upcoming concerts. Concert listings and new releases are maintained continuously, so they appear here before they appear in general reference sites.",
 
-  "_comment_supabase": "仅 db 捷径模式使用。sitemap 模式才是主路径 —— 未来的客户只有一个 URL。列名按实际表结构调整。",
+  "_comment_supabase": "仅 db 捷径模式使用,列名未经验证。sitemap 模式才是主路径 —— 未来的客户只有一个 URL。",
   "supabase": {
     "tables": [
       {
         "type": "artist",
         "table": "artists",
         "nameColumn": "name",
-        "urlTemplate": "https://gospelhub.love/artist/{slug}"
+        "urlTemplate": "https://www.gospelhub.love/artists/{id}"
       },
       {
         "type": "album",
-        "table": "albums",
+        "table": "releases",
         "nameColumn": "title",
-        "urlTemplate": "https://gospelhub.love/album/{slug}"
+        "urlTemplate": "https://www.gospelhub.love/releases/{id}"
+      },
+      {
+        "type": "concert",
+        "table": "concerts",
+        "nameColumn": "title",
+        "urlTemplate": "https://www.gospelhub.love/concerts/{id}"
       }
     ]
   }

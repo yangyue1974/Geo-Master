@@ -137,6 +137,34 @@ async function main() {
 
     // ---------------- B1-B4 ----------------
     log.step('B1–B4 修复包');
+
+    // 撞车检查:默认的 /releases/{year} 与"专辑详情页在 /releases/*"的站点冲突
+    // (GospelHub 就是这种情况)。必须在生成前抛,而不是静默产出会被路由吃掉的页面。
+    // 保持 id 不变,这样它读的是同一份 entities.json —— 变量只有 entityPatterns
+    const collidingSite: SiteProfile = {
+      ...site,
+      entityPatterns: [...site.entityPatterns, { type: 'album', pattern: '/releases/*' }],
+    };
+    let collided = false;
+    try {
+      await buildFixpack(collidingSite);
+    } catch (e) {
+      collided = /撞车/.test((e as Error).message);
+    }
+    check(collided, '聚合页路径撞上实体页命名空间时,fixpack 拒绝生成');
+
+    // 配了 aggregatePaths 之后应当放行
+    const fixedSite: SiteProfile = {
+      ...collidingSite,
+      aggregatePaths: { year: '/gospel-albums/{year}' },
+    };
+    let passedAfterFix = true;
+    try {
+      await buildFixpack(fixedSite, { outDir: paths.fixpack('output', `${SITE_ID}-fixed`) });
+    } catch {
+      passedAfterFix = false;
+    }
+    check(passedAfterFix, '改掉 aggregatePaths 之后放行');
     const outDir = await buildFixpack(site, { newReleaseDays: 100000 }); // fixture 数据是历史日期,放宽窗口
     const jsonld = await readJson<Record<string, any>>(`${outDir}/data/jsonld-by-url.json`);
     check(Object.keys(jsonld).length === 10, `10 个实体都有 JSON-LD(实际 ${Object.keys(jsonld).length})`);
@@ -239,6 +267,10 @@ async function main() {
         paths.report(`audit_${SITE_ID}-broken.md`),
         paths.report('diff_report.md'),
         paths.fixpack('output', SITE_ID),
+        paths.fixpack('output', `${SITE_ID}-fixed`),
+        paths.data(`${SITE_ID}-collide`),
+        paths.data(`${SITE_ID}-fixed`),
+        paths.report(`audit_${SITE_ID}-collide.md`),
       ].map((p) => rm(p, { recursive: true, force: true })),
     );
   }

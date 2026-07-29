@@ -113,6 +113,17 @@ function answerDetail(q: Query, e: Entity, all: Entity[]): string | null {
 
 // ---------------------------------------------------------------- aggregate 档
 
+export const DEFAULT_AGGREGATE_PATHS = {
+  year: '/releases/{year}',
+  theme: '/themes/{theme}',
+  collab: '/collaborations/{artist}',
+  newReleases: '/new-releases',
+} as const;
+
+export function aggregatePathTemplates(site: SiteProfile) {
+  return { ...DEFAULT_AGGREGATE_PATHS, ...(site.aggregatePaths ?? {}) };
+}
+
 /**
  * 聚合列表页 —— 优先级最高的新建页面类型。
  * 没有任何一个维基页面能回答"某年发行了哪些 gospel 专辑",
@@ -125,6 +136,7 @@ export function buildAggregatePages(
 ): AggregatePage[] {
   const origin = new URL(site.sitemap).origin;
   const noun = site.vertical.noun;
+  const tpl = aggregatePathTemplates(site);
   const pages: AggregatePage[] = [];
 
   // --- 按年份 ---
@@ -138,7 +150,7 @@ export function buildAggregatePages(
   }
   for (const [year, albums] of [...byYear].sort((a, b) => b[0].localeCompare(a[0]))) {
     if (albums.length < 2) continue; // 一张专辑不构成列表页
-    const path = `/releases/${year}`;
+    const path = tpl.year.replace('{year}', year);
     const items = albums
       .sort((a, b) => a.name.localeCompare(b.name))
       .map((a) => ({
@@ -173,7 +185,7 @@ export function buildAggregatePages(
   for (const [artist, partners] of collabs) {
     if (partners.size < 2) continue;
     const slug = slugify(artist);
-    const path = `/collaborations/${slug}`;
+    const path = tpl.collab.replace('{artist}', slug);
     const h1 = `${cap(noun)} artists who have collaborated with ${artist}`;
     const items = [...partners].sort().map((p) => {
       const ent = entities.find((x) => x.name === p);
@@ -205,7 +217,7 @@ export function buildAggregatePages(
   }
   for (const [theme, songs] of byTheme) {
     if (songs.length < 3) continue;
-    const path = `/themes/${slugify(theme)}`;
+    const path = tpl.theme.replace('{theme}', slugify(theme));
     const h1 = `${cap(noun)} songs about ${theme}`;
     const items = songs.map((s) => ({
       name: s.name,
@@ -259,7 +271,7 @@ export function buildNewReleasesPage(
   }));
 
   const h1 = `New ${noun} releases`;
-  const path = '/new-releases';
+  const path = aggregatePathTemplates(site).newReleases;
   return {
     path,
     h1,

@@ -221,6 +221,24 @@ export interface SiteProfile {
     themes?: string[];
   };
   sampling: Partial<Record<Tier, number>>;
+  /**
+   * 聚合页的路径模板。
+   *
+   * 必须可配置:默认值 `/releases/{year}` 在某些站点上会与已有的实体页命名空间撞车
+   * (GospelHub 的专辑详情页就是 `/releases/{uuid}`)。撞车的后果是新页面被现有路由吃掉,
+   * 而且实体抽取会把聚合页当成实体 —— 两个都不会报错,只会静默地测错东西。
+   * buildFixpack 会主动检查冲突并拒绝生成。
+   */
+  aggregatePaths?: {
+    /** 含 {year} */
+    year?: string;
+    /** 含 {theme} */
+    theme?: string;
+    /** 含 {artist} */
+    collab?: string;
+    /** fresh 档的新发行页 */
+    newReleases?: string;
+  };
   /** 可选:db 捷径模式的表映射 */
   supabase?: {
     tables: { type: string; table: string; nameColumn: string; urlTemplate: string }[];

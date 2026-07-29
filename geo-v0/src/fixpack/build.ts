@@ -2,7 +2,13 @@ import { log } from '../util/log.js';
 import { writeJson, writeText, readJson, readJsonOr, paths } from '../util/fsx.js';
 import { buildEntityJsonLd } from './jsonld.js';
 import { buildLlmsTxt, buildLlmsFullTxt } from './llmstxt.js';
-import { buildFaqBlocks, buildAggregatePages, buildNewReleasesPage, slugify } from './assets.js';
+import {
+  buildFaqBlocks,
+  buildAggregatePages,
+  buildNewReleasesPage,
+  aggregatePathTemplates,
+} from './assets.js';
+import { globToRegExp } from '../util/url.js';
 import { generateKey, keyFileName, manualStepsDoc } from './indexnow.js';
 import { nextjsSnippets } from './nextjs.js';
 import { env } from '../config.js';
@@ -23,6 +29,9 @@ export interface FixpackOpts {
 }
 
 export async function buildFixpack(site: SiteProfile, opts: FixpackOpts = {}): Promise<string> {
+  // 配置错误在任何 IO 之前就抛 —— 撞车是配置问题,不该等读完文件才发现
+  assertNoPathCollision(site);
+
   const outDir = opts.outDir ?? paths.fixpack('output', site.id);
   const entFile = await readJson<EntitiesFile>(paths.data(site.id, 'entities.json'));
   const entities = entFile.entities;
@@ -124,6 +133,41 @@ export async function buildFixpack(site: SiteProfile, opts: FixpackOpts = {}): P
   log.ok(`修复包完成 → ${outDir}`);
   log.info('  先读 DEPLOY.md。若 B5 还有 blocker,先修 blocker —— 在页面对抓取器可读之前,这一包里的东西都不会被看到。');
   return outDir;
+}
+
+/**
+ * 聚合页路径与已有实体页命名空间的撞车检查。
+ *
+ * 默认的 `/releases/{year}` 在 GospelHub 上会撞 `/releases/{uuid}`(专辑详情页)。
+ * 撞车不会报错,只会静默地做错两件事:新页面被现有路由吃掉,
+ * 以及下一轮实体抽取把聚合页当成实体收进 entities.json。
+ * 两个都不会抛异常,只会让数据慢慢变脏 —— 所以在生成之前就拦住。
+ */
+function assertNoPathCollision(site: SiteProfile): void {
+  const tpl = aggregatePathTemplates(site);
+  const matchers = site.entityPatterns.map((p) => ({ ...p, re: globToRegExp(p.pattern) }));
+  const samples: { kind: string; path: string }[] = [
+    { kind: 'year', path: tpl.year.replace('{year}', '2024') },
+    { kind: 'theme', path: tpl.theme.replace('{theme}', 'hope') },
+    { kind: 'collab', path: tpl.collab.replace('{artist}', 'example-artist') },
+    { kind: 'newReleases', path: tpl.newReleases },
+  ];
+
+  const hits = samples.flatMap((s) => {
+    const m = matchers.find((x) => x.re.test(s.path));
+    return m ? [{ ...s, pattern: m.pattern, type: m.type }] : [];
+  });
+
+  if (hits.length) {
+    throw new Error(
+      `聚合页路径与已有实体页命名空间撞车:\n` +
+        hits
+          .map((h) => `  ${h.kind}: ${h.path}  撞上  ${h.pattern} (${h.type} 详情页)`)
+          .join('\n') +
+        `\n在 sites/${site.id}.json 里加 aggregatePaths 改掉冲突的模板。` +
+        `\n不改的话新页面会被现有路由吃掉,而且下一轮抽取会把聚合页当成实体 —— 两者都不报错。`,
+    );
+  }
 }
 
 function robotsTxt(site: SiteProfile): string {
