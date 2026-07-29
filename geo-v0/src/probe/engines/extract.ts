@@ -75,6 +75,25 @@ export function extractCitations(raw: unknown, answerText: string): ExtractResul
       }
     }
 
+    /*
+     * --- OpenAI Responses API: output[].content[].annotations[] ---
+     * 形状与 chat completions 不同:正文和标注都挂在 output 数组里,
+     * 而不是 choices[0].message。两条路径都要走 —— 同一个 extractor 要同时吃两种 API。
+     */
+    for (const item of asArray(r.output)) {
+      for (const c of asArray(item?.content)) {
+        for (const a of asArray(c?.annotations)) {
+          if (!a || typeof a !== 'object') continue;
+          if (a.type === 'url_citation') add(a.url, 'output.annotations.url_citation', a.title);
+          else if (a.url) add(a.url, 'output.annotations.url', a.title);
+        }
+      }
+      // web_search_call 的结果里也带来源,取不到正文标注时是有效兜底
+      for (const s of asArray(item?.results ?? item?.action?.sources)) {
+        if (s && typeof s === 'object') add(s.url, 'output.web_search_call', s.title);
+      }
+    }
+
     // --- Gemini grounding: candidates[].groundingMetadata ---
     for (const cand of asArray(r.candidates)) {
       const gm = cand?.groundingMetadata;

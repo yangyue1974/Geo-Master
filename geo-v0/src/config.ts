@@ -38,7 +38,7 @@ export function requireEnv(key: string, why: string): string {
 
 export const MODELS = {
   perplexity: () => env('GEO_MODEL_PERPLEXITY') ?? 'perplexity/sonar-pro',
-  openaiSearch: () => env('GEO_MODEL_OPENAI_SEARCH') ?? 'openai/gpt-4o-search-preview',
+  openaiSearch: () => env('GEO_MODEL_OPENAI_SEARCH') ?? 'gpt-4.1',
   gemini: () => env('GEO_MODEL_GEMINI') ?? 'gemini-2.5-flash',
   claude: () => env('GEO_MODEL_CLAUDE') ?? 'claude-sonnet-4-5',
 };

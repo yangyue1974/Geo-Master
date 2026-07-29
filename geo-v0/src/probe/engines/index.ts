@@ -105,21 +105,71 @@ export function perplexityEngine(): Engine {
   };
 }
 
-// ---------------------------------------------------------------- 2. OpenAI 搜索版
+// ---------------------------------------------------------------- 2. OpenAI 搜索
 
+/**
+ * OpenAI 的检索走**直连**,不经 OpenRouter。
+ *
+ * spec 写的是「OpenRouter 上的 gpt-4o-search-preview 系」,但那批型号已经从 OpenRouter 下架
+ * (2026-07-29 实测 404)。OpenRouter 上剩下的 openai 检索型号只有 deep-research 系 ——
+ * 那是多轮深度检索,单题几分钟、成本高一到两个数量级,276 次调用会瞬间打穿预算护栏。
+ *
+ * 用两个 Perplexity 型号凑数更糟:它们共用同一套检索栈,测两遍等于测一遍,
+ * 尺子失去多样性,对手榜也会失真。
+ *
+ * 所以改为直连 Responses API + web_search 工具 —— 那是 OpenAI 现在真正的检索产品,
+ * 自带原生检索,而且是 ChatGPT 用户实际接触的那条链路。
+ */
 export function openaiSearchEngine(): Engine {
   const model = MODELS.openaiSearch();
   return {
     id: 'openai-search',
     model,
-    available: () => !!env('OPENROUTER_API_KEY'),
+    available: () => !!env('OPENAI_API_KEY'),
     async ask(query) {
-      // 搜索版模型不接受 temperature/top_p 等采样参数,请求体必须保持最小
-      const raw = await callOpenRouter(model, query);
-      const answerText = answerOf(raw);
-      return { answerText, citations: extractCitations(raw, answerText).citations, usage: usageOf(raw), raw, model };
+      const key = requireEnv('OPENAI_API_KEY', 'OpenAI 检索直连,不经 OpenRouter');
+      const res = await fetchWithRetry('https://api.openai.com/v1/responses', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', authorization: `Bearer ${key}` },
+        body: JSON.stringify({
+          model,
+          input: query,
+          tools: [{ type: 'web_search' }],
+          // 强制走检索,否则模型可能凭记忆作答 —— 那测的就不是检索行为了
+          tool_choice: { type: 'web_search' },
+        }),
+        timeoutMs: 300_000,
+        retries: 4,
+      });
+      const raw: any = JSON.parse(await res.text());
+      if (raw.error) throw new Error(`OpenAI error: ${JSON.stringify(raw.error).slice(0, 500)}`);
+
+      const answerText = responsesText(raw);
+      return {
+        answerText,
+        citations: extractCitations(raw, answerText).citations,
+        // Responses API 不回传美元成本,只有 token 数;按调用数估值交给 Budget 兜底
+        usage: {
+          promptTokens: raw?.usage?.input_tokens,
+          completionTokens: raw?.usage?.output_tokens,
+        },
+        raw,
+        model,
+      };
     },
   };
+}
+
+/** Responses API 的正文散落在 output[].content[].text,不是 choices[0].message.content。 */
+function responsesText(raw: any): string {
+  if (typeof raw?.output_text === 'string') return raw.output_text;
+  const parts: string[] = [];
+  for (const item of Array.isArray(raw?.output) ? raw.output : []) {
+    for (const c of Array.isArray(item?.content) ? item.content : []) {
+      if (typeof c?.text === 'string') parts.push(c.text);
+    }
+  }
+  return parts.join('');
 }
 
 // ---------------------------------------------------------------- 3. Gemini grounding(直连)
