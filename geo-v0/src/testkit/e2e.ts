@@ -204,7 +204,9 @@ async function main() {
       passedAfterFix = false;
     }
     check(passedAfterFix, '改掉 aggregatePaths 之后放行');
-    const outDir = await buildFixpack(site, { newReleaseDays: 100000 }); // fixture 数据是历史日期,放宽窗口
+    // fixture 刻意做得小,页面只有 2-3 条,所以这里把门槛降到 2;
+    // 默认门槛(3)的行为在下面单独验证。newReleaseDays 放宽是因为 fixture 的专辑是历史日期。
+    const outDir = await buildFixpack(site, { newReleaseDays: 100000, minAggregateItems: 2 });
     const jsonld = await readJson<Record<string, any>>(`${outDir}/data/jsonld-by-url.json`);
     check(Object.keys(jsonld).length === 15, `15 个实体都有 JSON-LD(实际 ${Object.keys(jsonld).length})`);
 
@@ -251,6 +253,16 @@ async function main() {
       '已结束的演出不出现在 coming up 列表里',
     );
     check(aggs.some((a) => a.kind === 'month'), '生成了按月份的演出聚合页');
+
+    // 薄页面门槛:默认 3 条时,那些 2 条的页面必须被挡掉,而且要报出来而不是静默丢弃
+    const thinDir = paths.fixpack('output', `${SITE_ID}-thin`);
+    await buildFixpack(site, { newReleaseDays: 100000, minAggregateItems: 3, outDir: thinDir });
+    const thinAggs = await readJson<any[]>(`${thinDir}/data/aggregate-pages.json`);
+    check(
+      thinAggs.every((a) => a.items.length >= 3),
+      `门槛 3 时不生成条目 <3 的聚合页(实际最小 ${Math.min(...thinAggs.map((a) => a.items.length))})`,
+    );
+    check(thinAggs.length < aggs.length, `门槛拦掉了 ${aggs.length - thinAggs.length} 个薄页面`);
     const tour = aggs.find((a) => a.kind === 'artist-tour');
     check(!!tour, '生成了歌手巡演页');
     check(tour?.items?.length === 3, `Mary Hale 巡演页含 3 场(实际 ${tour?.items?.length})`);
@@ -342,6 +354,7 @@ async function main() {
         paths.report('diff_report.md'),
         paths.fixpack('output', SITE_ID),
         paths.fixpack('output', `${SITE_ID}-fixed`),
+        paths.fixpack('output', `${SITE_ID}-thin`),
         paths.data(`${SITE_ID}-collide`),
         paths.data(`${SITE_ID}-fixed`),
         paths.report(`audit_${SITE_ID}-collide.md`),

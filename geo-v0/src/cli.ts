@@ -83,7 +83,7 @@ geo-v0 — 检测 / 修复 / 复测闭环
   score     --site <id>  --run <run_id>
   report    --site <id>  --run <run_id>
   diff      --site <id>  --runs <run_id,run_id,...>
-  fixpack   --site <id>  [--out <dir>]  [--new-release-days 90]
+  fixpack   --site <id>  [--out <dir>]  [--new-release-days 90]  [--min-aggregate-items 3]
   indexnow  --site <id>  [--generate-key]  [--submit]  [--dry-run]
   runs      列出已有 run_id
 
@@ -198,6 +198,7 @@ async function main(): Promise<void> {
       await buildFixpack(site!, {
         outDir: str(args, 'out'),
         newReleaseDays: num(args, 'new-release-days') ?? 90,
+        minAggregateItems: num(args, 'min-aggregate-items'),
       });
       break;
     }

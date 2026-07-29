@@ -1,5 +1,6 @@
 import { buildFaqJsonLd, buildItemListJsonLd, type JsonLd } from './jsonld.js';
-import type { Entity, Query, SiteProfile } from '../types.js';
+import type { Entity, Query, SiteProfile, TemplateId } from '../types.js';
+import { detailQuestionsFor } from '../questionTemplates.js';
 
 /**
  * B3 可被引用的内容资产 —— 修复包的重心。
@@ -46,20 +47,40 @@ export function buildFaqBlocks(entities: Entity[], queries: Query[], site: SiteP
   const byUrl = new Map(entities.map((e) => [e.url, e]));
   const blocks = new Map<string, FaqBlock>();
 
-  for (const q of queries) {
-    if (q.tier !== 'detail' || !q.entityUrl) continue;
-    const e = byUrl.get(q.entityUrl);
-    if (!e) continue;
-    const answer = answerDetail(q, e, entities);
-    if (!answer) continue; // 无数据不作答
-
+  const put = (e: Entity, q: { template: TemplateId; query: string; basis?: Record<string, string> }) => {
+    const answer = answerDetail(
+      { template: q.template, query: q.query, basis: q.basis, entity: e.name } as Query,
+      e,
+      entities,
+    );
+    if (!answer) return; // 无数据不作答
     let block = blocks.get(e.url);
     if (!block) {
       block = { entityUrl: e.url, entityName: e.name, entityType: e.type, qa: [], jsonLd: null };
       blocks.set(e.url, block);
     }
-    if (block.qa.some((x) => x.q === q.query)) continue;
+    if (block.qa.some((x) => x.q === q.query)) return;
     block.qa.push({ q: q.query, a: answer, template: q.template });
+  };
+
+  /*
+   * 先铺题库里的原题 —— 保证我们正在测的那些问题,页面上一字不差地答着。
+   */
+  for (const q of queries) {
+    if (q.tier !== 'detail' || !q.entityUrl) continue;
+    const e = byUrl.get(q.entityUrl);
+    if (e) put(e, q);
+  }
+
+  /*
+   * 再铺**全部**实体。
+   *
+   * 题库是样本,修复该覆盖总体。只给抽中的那 50 个实体加问答块,等于对着考卷答题:
+   * 434 个实体页里 384 个一点没改,站点整体几乎没变好,而 Day 30 的数字却会显示"有效"。
+   * 模板与题库共用同一份(questionTemplates.ts),所以措辞不会漂移。
+   */
+  for (const e of entities) {
+    for (const dq of detailQuestionsFor(e, entities)) put(e, dq);
   }
 
   for (const b of blocks.values()) b.jsonLd = buildFaqJsonLd(b.qa.map(({ q, a }) => ({ q, a })));
@@ -140,14 +161,36 @@ export function aggregatePathTemplates(site: SiteProfile) {
  * 没有任何一个维基页面能回答"某年发行了哪些 gospel 专辑",
  * 引擎回答这类问题时必须引用一个现成的列表页。这类页面就是为被引用而生的形态。
  */
+export interface AggregateOpts {
+  /**
+   * 一个聚合页至少要有多少条目才生成。
+   *
+   * 默认 3。实测 GospelHub 上 79 个聚合页里有 51 个只有 2-3 条 ——
+   * 一个列 2 场演出的页面既赢不了引用(对手是 Eventbrite 这个量级),
+   * 又会把站点整体的质量信号往下拉:大规模薄页面是搜索引擎明确会降权的模式。
+   *
+   * 但门槛是个判断,不是定理 —— 对长尾查询,一个只有 2 场演出的页面可能确实是唯一的答案。
+   * 所以它可配,而且被门槛挡掉的页面会明确报出来,不静默丢弃。
+   */
+  minItems?: number;
+}
+
+export interface AggregateResult {
+  pages: AggregatePage[];
+  /** 因条目太少被挡掉的页面,按类型汇总 —— 静默截断会让人误以为"全覆盖了" */
+  dropped: { kind: string; path: string; items: number }[];
+}
+
 export function buildAggregatePages(
   entities: Entity[],
   site: SiteProfile,
   themes: string[],
-): AggregatePage[] {
+  opts: AggregateOpts = {},
+): AggregateResult {
   const origin = new URL(site.sitemap).origin;
   const noun = site.vertical.noun;
   const tpl = aggregatePathTemplates(site);
+  const minItems = opts.minItems ?? 3;
   const pages: AggregatePage[] = [];
 
   // --- 按年份 ---
@@ -246,7 +289,12 @@ export function buildAggregatePages(
   }
 
   pages.push(...buildConcertPages(entities, site, tpl, origin, noun));
-  return pages;
+
+  const kept = pages.filter((p) => p.items.length >= minItems);
+  const dropped = pages
+    .filter((p) => p.items.length < minItems)
+    .map((p) => ({ kind: p.kind, path: p.path, items: p.items.length }));
+  return { pages: kept, dropped };
 }
 
 /**

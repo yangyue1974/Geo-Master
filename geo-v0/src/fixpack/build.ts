@@ -26,6 +26,8 @@ import type { EntitiesFile, QueriesFile, SiteProfile } from '../types.js';
 export interface FixpackOpts {
   outDir?: string;
   newReleaseDays?: number;
+  /** 聚合页的最低条目数,默认 3。见 assets.ts 的 AggregateOpts。 */
+  minAggregateItems?: number;
 }
 
 export async function buildFixpack(site: SiteProfile, opts: FixpackOpts = {}): Promise<string> {
@@ -68,7 +70,8 @@ export async function buildFixpack(site: SiteProfile, opts: FixpackOpts = {}): P
   await writeJson(`${outDir}/data/faq-blocks.json`, faqBlocks);
 
   const themes = site.vertical.themes ?? [];
-  const aggregates = buildAggregatePages(entities, site, themes);
+  const agg = buildAggregatePages(entities, site, themes, { minItems: opts.minAggregateItems });
+  const aggregates = agg.pages;
   await writeJson(`${outDir}/data/aggregate-pages.json`, aggregates);
 
   const newReleases = buildNewReleasesPage(entities, site, { days: opts.newReleaseDays ?? 90 });
@@ -87,6 +90,22 @@ export async function buildFixpack(site: SiteProfile, opts: FixpackOpts = {}): P
   }
   if (aggregates.filter((a) => a.kind === 'theme').length === 0) {
     log.warn('没有主题聚合页 —— 库里的歌没有主题标签。这是 aggregate 档最容易赢的一类页面,值得优先补数据。');
+  }
+
+  // 条目数分布直接打出来,不用另跑脚本才能看见
+  const sizes = aggregates.map((a) => a.items.length).sort((a, b) => b - a);
+  if (sizes.length) {
+    const median = sizes[Math.floor(sizes.length / 2)]!;
+    log.info(`  聚合页条目数: 最大 ${sizes[0]}, 中位 ${median}, 最小 ${sizes[sizes.length - 1]}`);
+  }
+  if (agg.dropped.length) {
+    const byKind = new Map<string, number>();
+    for (const d of agg.dropped) byKind.set(d.kind, (byKind.get(d.kind) ?? 0) + 1);
+    log.warn(
+      `  ${agg.dropped.length} 个聚合页因条目不足被挡掉` +
+        `(${[...byKind].map(([k, v]) => `${k}=${v}`).join(', ')})。` +
+        `薄页面赢不了引用,还会拉低站点整体质量信号。要放行就调 --min-aggregate-items。`,
+    );
   }
 
   // ---------------- B4 IndexNow ----------------
