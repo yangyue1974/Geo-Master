@@ -122,11 +122,36 @@ export function perplexityEngine(): Engine {
  */
 export function openaiSearchEngine(): Engine {
   const model = MODELS.openaiSearch();
+  /*
+   * 型号 id 里带斜杠(如 openai/gpt-5.6-sol)= OpenRouter 的型号,走 OpenRouter;
+   * 不带斜杠(如 gpt-4.1)= OpenAI 自己的型号,直连 Responses API。
+   *
+   * 两条路都留着,因为不是所有人都能直接买 OpenAI 的 API。
+   * 但注意:走 OpenRouter 的普通 chat 型号**没有原生检索**,它靠参数记忆作答、不返回 citations。
+   * 那测出来的空不是"没被引用",是"根本没有检索这回事" —— verify 会当场把这件事暴露出来。
+   */
+  const viaOpenRouter = model.includes('/');
   return {
     id: 'openai-search',
     model,
-    available: () => !!env('OPENAI_API_KEY'),
+    available: () => (viaOpenRouter ? !!env('OPENROUTER_API_KEY') : !!env('OPENAI_API_KEY')),
     async ask(query) {
+      if (viaOpenRouter) {
+        const raw = await callOpenRouter(model, query, {
+          // OpenRouter 对支持原生检索的型号透传这个参数;不支持的型号会忽略它。
+          // 这不是 `:online` —— 那个挂的是第三方索引,是被禁的。
+          web_search_options: {},
+        });
+        const answerText = answerOf(raw);
+        return {
+          answerText,
+          citations: extractCitations(raw, answerText).citations,
+          usage: usageOf(raw),
+          raw,
+          model,
+        };
+      }
+
       const key = requireEnv('OPENAI_API_KEY', 'OpenAI 检索直连,不经 OpenRouter');
       const res = await fetchWithRetry('https://api.openai.com/v1/responses', {
         method: 'POST',
