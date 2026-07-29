@@ -65,7 +65,13 @@ export async function fetchWithRetry(url: string, opts: FetchOpts = {}): Promise
       }
 
       const body = await res.text().catch(() => '');
-      lastErr = new HttpError(`HTTP ${res.status} ${url}`, res.status, body.slice(0, 2000));
+      // 重试路径也要带上响应体。429 尤其重要:上游用它区分"每分钟限流"(等一下就好)
+      // 和"这个型号不在你的免费层"(等多久都没用) —— 两者的处理完全相反。
+      lastErr = new HttpError(
+        `HTTP ${res.status} ${url}\n    ${body.replace(/\s+/g, ' ').slice(0, 600)}`,
+        res.status,
+        body.slice(0, 2000),
+      );
 
       if (attempt === retries) break;
       const retryAfter = Number(res.headers.get('retry-after'));
