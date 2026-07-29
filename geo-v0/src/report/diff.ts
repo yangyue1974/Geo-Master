@@ -93,9 +93,10 @@ export async function buildDiffReport(site: SiteProfile, runIds: string[]): Prom
       const first = cells[0];
       const lastC = cells[cells.length - 1];
       const delta = (lastC?.hardCitationRate ?? 0) - (first?.hardCitationRate ?? 0);
+      const n = lastC?.n ?? first?.n ?? 0;
       L.push(
         `| ${tier} | ${cells.map((c) => (c ? `${pct(c.hardCitationRate)} (${c.cited}/${c.n})` : '–')).join(' | ')} | ` +
-          `${delta >= 0 ? '+' : ''}${pct(delta)} | ${verdict(tier, delta, worstFloor)} |`,
+          `${delta >= 0 ? '+' : ''}${pct(delta)} | ${verdict(tier, delta, worstFloor, n)} |`,
       );
     }
     L.push('');
@@ -220,13 +221,27 @@ export async function buildDiffReport(site: SiteProfile, runIds: string[]): Prom
   return out;
 }
 
-function verdict(tier: Tier, delta: number, floor: number | null): string {
+/**
+ * 判读门槛。
+ *
+ * 两个约束取严的那个:
+ *
+ *  1. **噪声门槛** —— 由两次运行的一致率推出。引擎检索结果本身抖多大,
+ *     小于这个幅度的变化就读不出来。
+ *  2. **样本量门槛** —— 至少要两道题发生变化才算数。
+ *     基线实测一致率高达 100%,噪声门槛会算成 1%,而 38 题的档位里一道题就是 2.6% ——
+ *     单题翻转会被标成「超出噪声」。单题不是证据:它可能只是那道题的措辞恰好碰上了某个页面。
+ *     没有这一条,一个极稳定的尺子反而会制造假阳性。
+ */
+function verdict(tier: Tier, delta: number, floor: number | null, n: number): string {
   if (tier === 'control') return '对照组,预期不动';
-  const threshold = floor === null ? 0.05 : Math.max(0.02, 1 - floor) * 0.5;
-  if (delta > threshold) return '✅ 超出噪声,可读为上升';
-  if (delta < -threshold) return '🔻 超出噪声,下降';
+  const noiseThreshold = floor === null ? 0.05 : Math.max(0.02, 1 - floor) * 0.5;
+  const sampleThreshold = n > 0 ? 2 / n : 0.05;
+  const threshold = Math.max(noiseThreshold, sampleThreshold);
+  if (delta > threshold) return `✅ 超出门槛(>${pct(threshold)}),可读为上升`;
+  if (delta < -threshold) return `🔻 超出门槛(>${pct(threshold)}),下降`;
   if (delta === 0) return '无变化';
-  return '噪声内波动,不构成结论';
+  return `门槛内波动(≤${pct(threshold)}),不构成结论`;
 }
 
 function controlDrift(a: ScoresFile, b: ScoresFile) {
