@@ -1,6 +1,6 @@
 import { log } from '../util/log.js';
 import { writeText, readJson, paths } from '../util/fsx.js';
-import { HONEST_BOUNDS } from './bounds.js';
+import { boundsFor } from './bounds.js';
 import type { QueriesFile, ScoresFile, SiteProfile, Tier } from '../types.js';
 import { TIERS } from '../types.js';
 
@@ -160,7 +160,7 @@ export async function buildBaselineReport(site: SiteProfile, runId: string): Pro
   // ---------- 7. 诚实边界 ----------
   L.push('## 7. 诚实边界');
   L.push('');
-  for (const b of HONEST_BOUNDS) L.push(`${b}\n`);
+  for (const b of boundsFor(engines)) L.push(`${b}\n`);
 
   const md = L.join('\n');
   const out = paths.report(`baseline_${runId}.md`);

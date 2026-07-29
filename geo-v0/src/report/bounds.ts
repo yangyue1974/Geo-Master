@@ -26,3 +26,24 @@ export const HONEST_BOUNDS: string[] = [
     '每轮复测前必须重跑 `geo verify`,并核对 control 档对手结构;两者任一发生显著变化时,' +
     '本轮结果只能作为观察记录,不能作为结论。',
 ];
+
+/**
+ * 只跑了一台引擎时追加的边界。
+ *
+ * 由代码判断并写入,不靠人记着 —— 一份没有这条声明的单引擎报告,
+ * 读起来和多引擎报告没有区别,而结论的适用范围差了一个量级。
+ */
+export function boundsFor(engineIds: string[]): string[] {
+  const out = [...HONEST_BOUNDS];
+  if (engineIds.length === 1) {
+    out.push(
+      `6. **本轮只测了一台引擎(\`${engineIds[0]}\`),结论不能外推到其他引擎。** ` +
+        `不同引擎的检索栈与索引来源不同,对手格局可能完全不同 —— ` +
+        `Perplexity 侧被票务平台占据,不代表 ChatGPT 或 Gemini 侧也如此。` +
+        `第二引擎未能接入的原因:OpenRouter 上的 OpenAI 检索型号已下架(实测 404),` +
+        `普通 chat 型号无原生检索(实测引用全部来自正文,是凭记忆作答),` +
+        `Gemini 免费层在本账号所在区域不开放(实测 quota limit: 0)。`,
+    );
+  }
+  return out;
+}

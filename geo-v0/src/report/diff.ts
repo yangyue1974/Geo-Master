@@ -1,6 +1,6 @@
 import { log } from '../util/log.js';
 import { writeText, readJson, paths } from '../util/fsx.js';
-import { HONEST_BOUNDS } from './bounds.js';
+import { boundsFor } from './bounds.js';
 import { pct, esc } from './baseline.js';
 import type { QueriesFile, ScoresFile, SiteProfile, Tier, EngineId } from '../types.js';
 import { TIERS } from '../types.js';
@@ -212,7 +212,7 @@ export async function buildDiffReport(site: SiteProfile, runIds: string[]): Prom
   // ---------- 6. 诚实边界 ----------
   L.push('## 6. 诚实边界');
   L.push('');
-  for (const b of HONEST_BOUNDS) L.push(`${b}\n`);
+  for (const b of boundsFor(common)) L.push(`${b}\n`);
 
   const md = L.join('\n');
   const out = paths.report('diff_report.md');
