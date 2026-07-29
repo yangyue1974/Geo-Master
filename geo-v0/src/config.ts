@@ -11,6 +11,10 @@ export async function loadEnv(): Promise<void> {
   const p = resolve(paths.data('..'), '.env');
   if (!(await exists(p))) return;
   const text = await readFile(p, 'utf8');
+  // 加载前就存在的变量来自 shell / CI,优先级高于文件
+  const fromShell = new Set(Object.keys(process.env));
+  const seenInFile = new Map<string, number>();
+
   for (const line of text.split('\n')) {
     const t = line.trim();
     if (!t || t.startsWith('#')) continue;
@@ -21,17 +25,26 @@ export async function loadEnv(): Promise<void> {
     if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) {
       v = v.slice(1, -1);
     }
-    /*
-     * 空值视同未设置。
-     *
-     * .env.example 里的占位行(`INDEXNOW_KEY=`)会先把变量设成空字符串,
-     * 之后追加的真值就因为"已存在"被跳过 —— 而 env() 对空字符串返回 undefined,
-     * 于是程序报"未设置",文件里却明明写着。cp .env.example .env 再追加值是最常见的用法,
-     * 所以这条必须成立:后面的非空值覆盖前面的空值。
-     */
     if (!k) continue;
-    const existing = process.env[k];
-    if (existing === undefined || existing.trim() === '') process.env[k] = v;
+    /*
+     * 文件内后出现的值胜出;但 shell / CI 里已设好的环境变量仍然压过文件。
+     *
+     * 这个文件的实际编辑方式是 `printf 'KEY=新值' >> .env` —— 换 key、换型号都这么干。
+     * 先出现者胜出的话,追加的新值永远不生效:程序用着旧 key 报错,文件里却明明白白写着新的,
+     * 而且不会有任何提示。占位行(`KEY=`)与真值并存时同理。
+     */
+    if (!fromShell.has(k)) {
+      seenInFile.set(k, (seenInFile.get(k) ?? 0) + 1);
+      if (v.trim() !== '' || !process.env[k]) process.env[k] = v;
+    }
+  }
+
+  // 重复的 key 静默生效一个、忽略另一个,是排查时最浪费时间的一类问题
+  const dupes = [...seenInFile].filter(([, n]) => n > 1).map(([k]) => k);
+  if (dupes.length) {
+    console.warn(
+      `[env] .env 里有重复定义,以最后一行为准: ${dupes.join(', ')} —— 建议删掉旧的那几行。`,
+    );
   }
 }
 
