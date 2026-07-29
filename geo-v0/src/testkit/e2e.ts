@@ -111,6 +111,24 @@ async function main() {
     const badEntity = qf.queries.filter((q) => q.entity && !names.has(q.entity) && !isTrackName(q.entity, ents.entities));
     check(badEntity.length === 0, `所有题目的实体名都来自 entities.json(违规 ${badEntity.length} 条)`);
 
+    /*
+     * 关键断言:不出结构性必输的题。
+     * fixture 里既没有 collaborators 也没有主题标签,所以这两类题一道都不该出 ——
+     * 出了就既答不了、也生成不出对应页面,而且会稀释整档的分母。
+     */
+    check(
+      qf.queries.filter((q) => q.template === 'collab').length === 0,
+      '库里没有 collaborators,不出合作题(无数据不提问)',
+    );
+    check(
+      qf.queries.filter((q) => q.template === 'theme').length === 0,
+      '库里没有主题标签,不出主题题(无数据不提问)',
+    );
+    check(
+      qf.queries.some((q) => q.template === 'concert-venue'),
+      'detail 档含 concert-venue,不再是单一模板独吞整档',
+    );
+
     // 关键断言:fresh 档必须拆成两类,否则 Day 30 的对比无效
     const freshQ = qf.queries.filter((q) => q.tier === 'fresh');
     check(

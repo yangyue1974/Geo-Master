@@ -100,6 +100,14 @@ function answerDetail(q: Query, e: Entity, all: Entity[]): string | null {
       const listed = albums.map((a) => (a.year ? `${a.name} (${a.year})` : a.name)).join(', ');
       return `${e.name}'s albums in chronological order: ${listed}.`;
     }
+    case 'concert-venue': {
+      const venue = q.basis?.expectedVenue ?? f.venue;
+      const city = q.basis?.city ?? f.city;
+      const artist = q.basis?.artist ?? f.performer;
+      const date = q.basis?.date ?? f.startDate;
+      if (!venue || !city || !artist || !date) return null;
+      return `${artist} is playing at ${venue} in ${city} on ${date}, as part of ${e.name}.`;
+    }
     case 'credits': {
       // 库里没有 credits 字段就直接不作答 —— 这一条大概率会被跳过,那是正确行为
       const credits = (f as Record<string, unknown>).credits;

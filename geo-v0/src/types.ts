@@ -26,7 +26,8 @@ export type TemplateId =
   // 而演出天然是时效的、地域的、列表形态的,是 fresh / aggregate 两档最好赢的一类。
   | 'artist-touring'
   | 'concerts-city'
-  | 'concerts-month';
+  | 'concerts-month'
+  | 'concert-venue';
 
 /**
  * 时效性分类 —— spec 原文没有这一层,但 fresh 档必须拆。

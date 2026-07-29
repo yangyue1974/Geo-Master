@@ -179,6 +179,30 @@ export async function generateQueries(site: SiteProfile, opts: QueryOpts = {}): 
     });
   }
 
+  /*
+   * concert-venue —— 用我们确实拥有的数据出的 detail 题。
+   *
+   * 没有这一条,GospelHub 的 detail 档是 47/50 道 release 题(「某专辑什么时候发行的」),
+   * 也就是整档只在测一件事,而且测的恰恰是维基百科 / Apple Music / Spotify
+   * 最可能已经答好的那件。
+   *
+   * 「X 在某城市哪个场馆演出」有确定答案、答案就在库里、而且没有百科页面覆盖。
+   */
+  for (const c of entities) {
+    if (c.type !== 'concert') continue;
+    const f = c.facts;
+    if (!f?.performer || !f.city || !f.venue || !isUpcoming(f.startDate)) continue;
+    detailCandidates.push({
+      tier: 'detail',
+      template: 'concert-venue',
+      entity: f.performer,
+      entityUrl: c.url,
+      query: `Which venue is ${f.performer} playing at in ${f.city}?`,
+      timeSensitivity: 'entity-relative',
+      basis: { artist: f.performer, city: f.city, expectedVenue: f.venue, date: f.startDate! },
+    });
+  }
+
   pushAll(queries, balancedPick(detailCandidates, sampling.detail, seed + ':detail'));
 
   // ---- aggregate: 跨实体,没有单一维基页能回答 ----
@@ -196,18 +220,42 @@ export async function generateQueries(site: SiteProfile, opts: QueryOpts = {}): 
     });
   }
 
-  for (const th of themes) {
-    aggCandidates.push({
-      tier: 'aggregate',
-      template: 'theme',
-      entity: null,
-      query: `${cap(noun)} songs about ${th}?`.replace(/\s+/g, ' '),
-      timeSensitivity: 'none',
-      basis: { theme: th },
-    });
+  /*
+   * theme / collab 只在库里确实有支撑数据时才出题。
+   *
+   * 这是把「无数据不作答」从答案和页面延伸到**出题**。原来没有这层约束,
+   * 结果在 GospelHub 上出了 35/50 道结构性必输的 aggregate 题:
+   * 库里既没有 collaborators 字段也没有主题标签,我们既答不了,也生成不出对应页面。
+   *
+   * 危害不只是浪费预算,更是**稀释分母**:演出那 15 题即使赢 10 道,
+   * 整档也只显示 10/50 = 20%,而真实的可赢题命中率是 67%。那个数字会误导 Day 30 的判断。
+   */
+  const themedEntities = entities.filter((e) => {
+    const t = (e.facts as Record<string, unknown> | undefined)?.themes;
+    return Array.isArray(t) && t.length > 0;
+  });
+  if (themedEntities.length > 0) {
+    for (const th of themes) {
+      const n = themedEntities.filter((e) =>
+        ((e.facts as Record<string, unknown>).themes as string[]).some(
+          (x) => x.toLowerCase() === th.toLowerCase(),
+        ),
+      ).length;
+      if (n < 3) continue; // 不足 3 首构不成一个值得引用的列表
+      aggCandidates.push({
+        tier: 'aggregate',
+        template: 'theme',
+        entity: null,
+        query: `${cap(noun)} songs about ${th}?`.replace(/\s+/g, ' '),
+        timeSensitivity: 'none',
+        basis: { theme: th, knownSongs: String(n) },
+      });
+    }
   }
 
   for (const ar of artists) {
+    const collab = (ar.facts as Record<string, unknown> | undefined)?.collaborators;
+    if (!Array.isArray(collab) || collab.length < 2) continue;
     aggCandidates.push({
       tier: 'aggregate',
       template: 'collab',
@@ -215,7 +263,7 @@ export async function generateQueries(site: SiteProfile, opts: QueryOpts = {}): 
       entityUrl: ar.url,
       query: `Which ${noun} artists have collaborated with ${ar.name}?`.replace(/\s+/g, ' '),
       timeSensitivity: 'none',
-      basis: { artist: ar.name },
+      basis: { artist: ar.name, knownCollaborators: String(collab.length) },
     });
   }
 
@@ -224,7 +272,9 @@ export async function generateQueries(site: SiteProfile, opts: QueryOpts = {}): 
   const concerts = entities.filter((e) => e.type === 'concert' && e.facts?.startDate);
   const upcoming = concerts.filter((e) => isUpcoming(e.facts?.startDate));
 
-  for (const [city, list] of topGroups(upcoming, (e) => e.facts?.city, 8)) {
+  // 上限放宽:演出题是这个站最强的一类,不该被一个随手定的数字卡住。
+  // 真正的约束是 balancedPick 的配额,那里会按各模板可用量轮转。
+  for (const [city, list] of topGroups(upcoming, (e) => e.facts?.city, 30)) {
     if (list.length < 2) continue;
     aggCandidates.push({
       tier: 'aggregate',
@@ -236,7 +286,7 @@ export async function generateQueries(site: SiteProfile, opts: QueryOpts = {}): 
     });
   }
 
-  for (const [ym, list] of topGroups(upcoming, (e) => e.facts?.startDate?.slice(0, 7), 6)) {
+  for (const [ym, list] of topGroups(upcoming, (e) => e.facts?.startDate?.slice(0, 7), 18)) {
     if (list.length < 2) continue;
     aggCandidates.push({
       tier: 'aggregate',

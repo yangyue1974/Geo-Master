@@ -124,6 +124,11 @@ export async function runAudit(
     /* 还没跑 extract,只报 sitemap 侧的数字 */
   }
 
+  const entityNameByUrl = new Map<string, string>();
+  for (const e of entFile?.entities ?? []) {
+    if (e.name) entityNameByUrl.set(e.url.replace(/\/$/, ''), e.name);
+  }
+
   if (entFile) {
     const inSitemap = new Set(sitemapUrls.map((u) => u.replace(/\/$/, '')));
     const missing = entFile.entities.filter((e) => !inSitemap.has(e.url.replace(/\/$/, '')));
@@ -222,12 +227,22 @@ export async function runAudit(
     if (jsonLdCount > 0) withJsonLd++;
     else noJsonLdPages.push(r.url);
 
-    const slug = decodeURIComponent(pathOf(r.url).split('/').filter(Boolean).pop() ?? '')
-      .replace(/[-_]+/g, ' ')
-      .toLowerCase();
-    const titleHasEntity = slug.length > 2 && looseIncludes(title.toLowerCase(), slug);
-    if (titleHasEntity) withEntityInTitle++;
-    else badTitlePages.push(r.url);
+    /*
+     * 「title 是否含实体名」必须拿**抽到的实体名**比,不能拿 URL slug 比。
+     * GospelHub 的 slug 是 UUID,拿它比对会 11/11 全部误报 ——
+     * 而这条警告会把人送去改本来就没问题的 title 模板。
+     * 没有 entities.json 时(还没跑 extract)退回 slug,但要求 slug 看起来像人类可读的名字。
+     */
+    const known = entityNameByUrl.get(r.url.replace(/\/$/, ''));
+    const needle = known?.toLowerCase() ?? readableSlug(r.url);
+    if (!needle) {
+      // 既没有已知实体名,slug 又是 UUID —— 无从判断,不作结论
+      withEntityInTitle++;
+    } else if (looseIncludes(title.toLowerCase(), needle)) {
+      withEntityInTitle++;
+    } else {
+      badTitlePages.push(r.url);
+    }
 
     if (meta.length > 20) withMeta++;
   }
@@ -401,6 +416,19 @@ function pickSpread<T>(arr: T[], n: number): T[] {
   if (arr.length <= n) return arr.slice();
   const step = arr.length / n;
   return Array.from({ length: n }, (_, i) => arr[Math.floor(i * step)]!);
+}
+
+/**
+ * URL 末段作为实体名的兜底。
+ * UUID / 纯数字 / 过短的 slug 返回 null —— 它们不是人类可读的名字,拿来比对只会产生误报。
+ */
+function readableSlug(url: string): string | null {
+  const seg = decodeURIComponent(pathOf(url).split('/').filter(Boolean).pop() ?? '');
+  if (!seg) return null;
+  if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(seg)) return null;
+  if (/^[0-9a-f]{16,}$/i.test(seg) || /^\d+$/.test(seg)) return null;
+  const words = seg.replace(/[-_]+/g, ' ').trim().toLowerCase();
+  return words.length > 2 ? words : null;
 }
 
 function looseIncludes(haystack: string, needle: string): boolean {
