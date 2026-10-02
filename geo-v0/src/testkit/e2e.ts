@@ -68,7 +68,20 @@ async function main() {
     // ---------------- A1 ----------------
     log.step('A1 实体抽取');
     const ents = await extractEntities(site, { source: 'sitemap', concurrency: 4 });
-    check(ents.entities.length === 15, `抽到 15 个实体(实际 ${ents.entities.length})`);
+    check(ents.entities.length === 15, `抽到 15 个实体,失效 URL 不计入(实际 ${ents.entities.length})`);
+
+    // 关键断言:失效页面不是实体。GospelHub 上 194 个已删除演出的 URL 曾被抽成一个叫站名的
+    // "实体",再被去重合并掉 —— 日志里只显示"去重合并",看不出 sitemap 里有一批死链。
+    check(
+      !ents.entities.some((e) => e.name === 'Fixture Gospel'),
+      '没有以站名命名的假实体(软 404 / 跳首页被识别)',
+    );
+    const deadFile = await readJson<{ dead: { url: string; reason: string }[] }>(
+      paths.data(SITE_ID, 'dead-urls.json'),
+    );
+    const reasons = deadFile.dead.map((d) => d.reason).join(' | ');
+    check(deadFile.dead.length === 3, `3 个失效 URL 被记录(实际 ${deadFile.dead.length}: ${reasons})`);
+    check(/404/.test(reasons) && /重定向/.test(reasons) && /软 404/.test(reasons), '三种失效形态各自被认出');
 
     // 关键断言:同一巡演的 3 场同名演出必须全部保留。
     // 按名字去重会把它们压成 1 个 —— 这是 GospelHub 上真实丢掉 43% 场次的那个 bug。
@@ -163,6 +176,7 @@ async function main() {
       audit.findings.find((f) => f.id === 'thin-content')?.severity === 'warn',
       '内容偏薄单独报为 warn,不与 CSR 混为一谈',
     );
+    check(ids.has('sitemap-dead-urls'), 'audit 报出 sitemap 里的死链');
 
     // 用含空壳页的 sitemap 单独验证 CSR 检测器确实能报出来
     const brokenSite: SiteProfile = { ...site, id: `${SITE_ID}-broken`, sitemap: `${origin}/sitemap-broken.xml` };

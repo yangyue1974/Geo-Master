@@ -102,7 +102,28 @@ export function startFixtureServer(port = 0): Promise<{ server: Server; origin: 
       return send(urlset(SONGS.map((s) => `${origin}/song/${s.slug}`)), 'application/xml');
     }
     if (url.pathname === '/sitemap-concerts.xml') {
-      return send(urlset(CONCERTS.map((c) => `${origin}/concert/${c.slug}`)), 'application/xml');
+      // 末尾三条是已失效的演出 —— 记录删了,sitemap 没同步。GospelHub 上实测有 194 条这样的 URL。
+      return send(
+        urlset([
+          ...CONCERTS.map((c) => `${origin}/concert/${c.slug}`),
+          `${origin}/concert/gone-404`,
+          `${origin}/concert/gone-redirect`,
+          `${origin}/concert/gone-soft`,
+        ]),
+        'application/xml',
+      );
+    }
+
+    // 三种失效形态:硬 404 / 跳首页 / 返回 200 的全站通用页
+    if (url.pathname === '/concert/gone-404') {
+      return send('<!doctype html><html><head><title>Event not found</title></head><body><h1>Not found</h1></body></html>', 'text/html; charset=utf-8', 404);
+    }
+    if (url.pathname === '/concert/gone-redirect') {
+      res.writeHead(302, { location: '/' });
+      return res.end();
+    }
+    if (url.pathname === '/' || url.pathname === '/concert/gone-soft') {
+      return send(homePage());
     }
 
     // 单独一份含空壳页的 sitemap —— 专门用来验证 audit 的 CSR 检测器,
@@ -250,4 +271,15 @@ function concertPage(c: (typeof CONCERTS)[number], origin: string): string {
     },
     `${c.tour} on ${c.date} at ${c.venue}, ${c.city}.`,
   );
+}
+
+/** 全站通用页。软 404 返回的就是这种东西:200 状态,站名当标题,没有任何实体级结构化数据。 */
+function homePage(): string {
+  return `<!doctype html><html lang="en"><head>
+<title>Fixture Gospel</title>
+<meta name="description" content="A fixture database of gospel artists, releases and concerts.">
+</head><body>
+<h1>Fixture Gospel</h1>
+<p>A fixture database of gospel artists, releases and concerts. Browse artists, new releases and upcoming concerts. This homepage carries enough visible text to look like a normal server-rendered page, which is exactly why a soft 404 that returns it is easy to mistake for a real entity page.</p>
+</body></html>`;
 }

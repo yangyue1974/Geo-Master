@@ -1,5 +1,4 @@
-import { fetchText } from '../util/http.js';
-import { mapLimit } from '../util/http.js';
+import { fetchWithRetry, mapLimit } from '../util/http.js';
 import { log, progress } from '../util/log.js';
 import { writeJson, paths, readJsonOr } from '../util/fsx.js';
 import { globToRegExp, pathOf } from '../util/url.js';
@@ -112,29 +111,89 @@ async function extractFromSitemap(site: SiteProfile, opts: ExtractOpts): Promise
 
   log.step(`抓取 ${targets.length} 个实体页 HTML(并发 ${opts.concurrency ?? 5})`);
   const bar = progress('pages', targets.length);
-  const results = await mapLimit(targets, opts.concurrency ?? 5, async ({ type, url }) => {
+  const dead: { url: string; type: string; reason: string }[] = [];
+  const failed: { url: string; type: string; error: string }[] = [];
+  const siteNameLc = site.siteName.trim().toLowerCase();
+
+  const results = await mapLimit(targets, opts.concurrency ?? 5, async ({ type, url }): Promise<Entity | null> => {
     const cached = cache[url];
     if (cached) {
       bar.tick('(cached)');
-      return { type, url, ...cached } as Entity & { facts: never };
+      return { type, url, ...cached } as Entity;
     }
     try {
-      const html = await fetchText(url, { timeoutMs: 45_000, retries: 2, noRetryStatus: [404, 410] });
+      const res = await fetchWithRetry(url, { timeoutMs: 45_000, retries: 2, noRetryStatus: [404, 410] });
+      const html = await res.text();
+
+      /*
+       * 失效页面不是实体。三种形态都要认出来:
+       *   - 硬 404 / 410
+       *   - 被重定向到别的路径(常见于删除后跳首页)
+       *   - 软 404:返回 200,但内容是全站通用页 —— 名字就是站名,没有任何实体级结构化数据
+       *
+       * 不拦的话,每个失效 URL 都会抽出一个叫站名的"实体",然后被去重合并成一条 ——
+       * GospelHub 上 194 个已删除的演出 URL 就是这样静默消失的,日志里只显示"去重合并"。
+       */
+      if (res.status === 404 || res.status === 410) {
+        dead.push({ url, type, reason: `HTTP ${res.status}` });
+        bar.tick('(dead)');
+        return null;
+      }
+      if (res.redirected && pathOf(res.url) !== pathOf(url)) {
+        dead.push({ url, type, reason: `重定向到 ${pathOf(res.url) || '/'}` });
+        bar.tick('(dead)');
+        return null;
+      }
       const ex = extractFromHtml(html, url);
-      const rec = { name: ex.name ?? nameFromSlug(url), aliases: ex.aliases, facts: ex.facts };
+      const hasEntityFacts = !!ex.facts._source?.some((s) => s === 'jsonld' || s === 'microdata');
+      if (ex.name && ex.name.trim().toLowerCase() === siteNameLc && !hasEntityFacts) {
+        dead.push({ url, type, reason: '返回全站通用页(软 404)' });
+        bar.tick('(dead)');
+        return null;
+      }
+
+      // slug 兜底只在 slug 本身可读时使用;UUID slug 造出来的名字比没有名字更糟
+      const name = ex.name ?? readableSlugName(url);
+      if (!name) {
+        failed.push({ url, type, error: '页面里抽不到实体名,slug 也不可读' });
+        bar.tick('(no name)');
+        return null;
+      }
+      const rec = { name, aliases: ex.aliases, facts: ex.facts };
       cache[url] = rec;
       bar.tick();
       return { type, url, ...rec };
     } catch (e) {
       bar.tick('(failed)');
-      log.warn(`抓取失败 ${url}: ${(e as Error).message}`);
-      return { type, url, name: nameFromSlug(url), aliases: [], facts: {} };
+      failed.push({ url, type, error: (e as Error).message.split('\n')[0]! });
+      return null;
     }
   });
   bar.done();
   await writeJson(cachePath, cache, false);
 
-  const deduped = dedupe(results as Entity[]);
+  if (dead.length) {
+    const pct = ((dead.length / targets.length) * 100).toFixed(0);
+    const byType = new Map<string, number>();
+    for (const d of dead) byType.set(d.type, (byType.get(d.type) ?? 0) + 1);
+    log.warn(
+      `sitemap 里有 ${dead.length}/${targets.length} 个实体 URL 已失效(${pct}%;` +
+        `${[...byType].map(([t, n]) => `${t}=${n}`).join(', ')}),已排除。` +
+        `示例: ${dead[0]!.url} → ${dead[0]!.reason}`,
+    );
+    log.warn('  这是站点问题,不是抽取问题:抓取器沿 sitemap 抓到一批死链,会拉低整站的质量信号。明细见 dead-urls.json。');
+  }
+  if (failed.length) {
+    log.warn(`${failed.length} 个页面抓取失败或抽不到实体名,已排除。示例: ${failed[0]!.url} — ${failed[0]!.error}`);
+  }
+  await writeJson(paths.data(site.id, 'dead-urls.json'), {
+    checkedAt: new Date().toISOString(),
+    total: targets.length,
+    dead,
+    failed,
+  });
+
+  const deduped = dedupe(results.filter((r): r is Entity => r !== null));
   const dropped = results.length - deduped.length;
   if (dropped > 0) log.info(`  去重合并 ${dropped} 个同一实体的重复页面`);
   return deduped;
@@ -189,6 +248,15 @@ function factRichness(e: Entity): number {
 }
 
 /** URL slug → 人类可读名。仅在页面抽取失败时兜底。 */
+/** slug 可读时才拿它当名字。UUID、纯数字、十六进制串一律返回 null。 */
+function readableSlugName(url: string): string | null {
+  const last = pathOf(url).split('/').filter(Boolean).pop() ?? '';
+  if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(last)) return null;
+  if (/^[0-9a-f]{16,}$/i.test(last) || /^\d+$/.test(last)) return null;
+  const name = nameFromSlug(url);
+  return name.length > 1 ? name : null;
+}
+
 function nameFromSlug(url: string): string {
   const segs = pathOf(url).split('/').filter(Boolean);
   const last = segs[segs.length - 1] ?? '';

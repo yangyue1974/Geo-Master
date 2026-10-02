@@ -1,0 +1,116 @@
+qid,tier,template,timeSensitivity,entity,query,basis
+q001,control,who-is,none,Stephen Stanley,Who is Stephen Stanley?,
+q002,control,who-is,none,Brandon Lake,Who is Brandon Lake?,
+q003,control,who-is,none,Hannah McClure,Who is Hannah McClure?,
+q004,control,who-is,none,NF,Who is NF?,
+q005,control,who-is,none,Jervis Campbell,Who is Jervis Campbell?,
+q006,control,who-is,none,The Red Clay Strays,Who is The Red Clay Strays?,
+q007,control,who-is,none,Maverick City Music,Who is Maverick City Music?,
+q008,control,who-is,none,Patrick Mayberry,Who is Patrick Mayberry?,
+q009,control,who-is,none,Ellie Holcomb,Who is Ellie Holcomb?,
+q010,control,who-is,none,MercyMe,Who is MercyMe?,
+q011,control,who-is,none,Darlene Zschech,Who is Darlene Zschech?,
+q012,control,who-is,none,AOH Music,Who is AOH Music?,
+q013,control,who-is,none,NONAH,Who is NONAH?,
+q014,control,who-is,none,Love & The Outcome,Who is Love & The Outcome?,
+q015,control,who-is,none,Jesus Culture,Who is Jesus Culture?,
+q016,control,who-is,none,Brooke Ligertwood,Who is Brooke Ligertwood?,
+q017,control,who-is,none,Bella Taylor Smith,Who is Bella Taylor Smith?,
+q018,control,who-is,none,Crowder,Who is Crowder?,
+q019,control,who-is,none,Jenn Johnson,Who is Jenn Johnson?,
+q020,control,who-is,none,Brian & Jenn Johnson,Who is Brian & Jenn Johnson?,
+q021,detail,chronology,none,Brandon Lake,List Brandon Lake's albums in chronological order.,artist=Brandon Lake; knownAlbums=4
+q022,detail,concert-venue,entity-relative,Passion,"Which venue is Passion playing at in Arlington, TX?","artist=Passion; city=Arlington, TX; expectedVenue=Globe Life Field; date=2026-12-31"
+q023,detail,release,none,Faith Hope Love,When was the album Faith Hope Love by We Are Messengers released?,album=Faith Hope Love; artist=We Are Messengers; expectedDate=2026-02-06
+q024,detail,chronology,none,Matthew West,List Matthew West's albums in chronological order.,artist=Matthew West; knownAlbums=2
+q025,detail,concert-venue,entity-relative,Blessing Offor,"Which venue is Blessing Offor playing at in San Antonio, TX?","artist=Blessing Offor; city=San Antonio, TX; expectedVenue=Paper Tiger; date=2026-10-21"
+q026,detail,release,none,House of Worship,When was the album House of Worship by Lakewood Music released?,album=House of Worship; artist=Lakewood Music; expectedDate=2026-03-20
+q027,detail,chronology,none,We The Kingdom,List We The Kingdom's albums in chronological order.,artist=We The Kingdom; knownAlbums=2
+q028,detail,concert-venue,entity-relative,Zach Williams,"Which venue is Zach Williams playing at in Duluth, MN?","artist=Zach Williams; city=Duluth, MN; expectedVenue=DECC Symphony Hall; date=2026-10-29"
+q029,detail,release,none,THIS CANNOT BE SOLD,When was the album THIS CANNOT BE SOLD by KB released?,album=THIS CANNOT BE SOLD; artist=KB; expectedDate=2026-07-10
+q030,detail,chronology,none,Tauren Wells,List Tauren Wells's albums in chronological order.,artist=Tauren Wells; knownAlbums=2
+q031,detail,concert-venue,entity-relative,Tauren Wells,"Which venue is Tauren Wells playing at in Lubbock, TX?","artist=Tauren Wells; city=Lubbock, TX; expectedVenue=Helen DeVitt Jones Theater, Buddy Holly Hall; date=2026-10-27"
+q032,detail,release,none,So Long,When was the album So Long by Peter Burton released?,album=So Long; artist=Peter Burton; expectedDate=2026-04-24
+q033,detail,concert-venue,entity-relative,Zach Williams,"Which venue is Zach Williams playing at in Bloomington, IN?","artist=Zach Williams; city=Bloomington, IN; expectedVenue=Indiana University Auditorium; date=2026-10-23"
+q034,detail,release,none,Mad At God,When was the album Mad At God by Jenn Johnson released?,album=Mad At God; artist=Jenn Johnson; expectedDate=2026-04-03
+q035,detail,concert-venue,entity-relative,TobyMac,"Which venue is TobyMac playing at in Evansville, IN?","artist=TobyMac; city=Evansville, IN; expectedVenue=Ford Center; date=2026-11-06"
+q036,detail,release,none,Moonlight,When was the album Moonlight by Chelsea Plank released?,album=Moonlight; artist=Chelsea Plank; expectedDate=2026-05-01
+q037,detail,concert-venue,entity-relative,Bethel Music,Which venue is Bethel Music playing at in New York?,artist=Bethel Music; city=New York; expectedVenue=Irving Plaza; date=2026-10-17
+q038,detail,release,none,Break Open (Live),When was the album Break Open (Live) by Pat Barrett released?,album=Break Open (Live); artist=Pat Barrett; expectedDate=2026-03-13
+q039,detail,concert-venue,entity-relative,Zach Williams,"Which venue is Zach Williams playing at in Longview, TX?","artist=Zach Williams; city=Longview, TX; expectedVenue=LeTourneau University Belcher Center; date=2026-11-05"
+q040,detail,release,none,Sparrow,When was the album Sparrow by Love & The Outcome released?,album=Sparrow; artist=Love & The Outcome; expectedDate=2026-03-13
+q041,detail,concert-venue,entity-relative,Phil Wickham,Which venue is Phil Wickham playing at in Anaheim?,artist=Phil Wickham; city=Anaheim; expectedVenue=Honda Center; date=2026-10-15
+q042,detail,release,none,Closer (Live in Chicago),When was the album Closer (Live in Chicago) by Jonathan McReynolds released?,album=Closer (Live in Chicago); artist=Jonathan McReynolds; expectedDate=2026-03-27
+q043,detail,concert-venue,entity-relative,TobyMac,"Which venue is TobyMac playing at in Des Moines, IA?","artist=TobyMac; city=Des Moines, IA; expectedVenue=Casey's Center; date=2026-11-19"
+q044,detail,release,none,The Reminder (Deluxe),When was the album The Reminder (Deluxe) by TAYA released?,album=The Reminder (Deluxe); artist=TAYA; expectedDate=2026-04-24
+q045,detail,concert-venue,entity-relative,Blessing Offor,"Which venue is Blessing Offor playing at in San Francisco, CA?","artist=Blessing Offor; city=San Francisco, CA; expectedVenue=Cafe du Nord; date=2026-10-25"
+q046,detail,release,none,DAY,When was the album DAY by Jonathan Ogden released?,album=DAY; artist=Jonathan Ogden; expectedDate=2026-03-14
+q047,detail,concert-venue,entity-relative,Tauren Wells,"Which venue is Tauren Wells playing at in Louisville, KY?","artist=Tauren Wells; city=Louisville, KY; expectedVenue=The Louisville Palace; date=2026-10-16"
+q048,detail,release,none,Just That Good (Live From Passion 2026),When was the album Just That Good (Live From Passion 2026) by Passion released?,album=Just That Good (Live From Passion 2026); artist=Passion; expectedDate=2026-03-21
+q049,detail,concert-venue,entity-relative,Zach Williams,"Which venue is Zach Williams playing at in Evans, GA?","artist=Zach Williams; city=Evans, GA; expectedVenue=Columbia County Performing Arts Center; date=2026-11-13"
+q050,detail,release,none,breakups with best friends,When was the album breakups with best friends by Zoe Levert released?,album=breakups with best friends; artist=Zoe Levert; expectedDate=2026-04-17
+q051,detail,concert-venue,entity-relative,Zach Williams,"Which venue is Zach Williams playing at in Evansville, IN?","artist=Zach Williams; city=Evansville, IN; expectedVenue=Old National Events Plaza; date=2026-10-17"
+q052,detail,release,none,COULD BE TONIGHT,When was the album COULD BE TONIGHT by Hulvey released?,album=COULD BE TONIGHT; artist=Hulvey; expectedDate=2026-04-17
+q053,detail,concert-venue,entity-relative,Charity Gayle,"Which venue is Charity Gayle playing at in Cleveland, OH?","artist=Charity Gayle; city=Cleveland, OH; expectedVenue=Wolstein Center at CSU; date=2026-10-15"
+q054,detail,release,none,Here Comes the Wind,When was the album Here Comes the Wind by Travis Greene released?,album=Here Comes the Wind; artist=Travis Greene; expectedDate=2026-05-01
+q055,detail,concert-venue,entity-relative,Zach Williams,"Which venue is Zach Williams playing at in Knoxville, TN?","artist=Zach Williams; city=Knoxville, TN; expectedVenue=Knoxville Civic Auditorium and Coliseum; date=2026-10-15"
+q056,detail,release,none,Live From Liberty University,When was the album Live From Liberty University by Meredith Andrews released?,album=Live From Liberty University; artist=Meredith Andrews; expectedDate=2026-04-03
+q057,detail,concert-venue,entity-relative,TobyMac,"Which venue is TobyMac playing at in Sioux Falls, SD?","artist=TobyMac; city=Sioux Falls, SD; expectedVenue=Denny Sanford PREMIER Center; date=2027-03-16"
+q058,detail,release,none,Good,When was the album Good by Matthew West released?,album=Good; artist=Matthew West; expectedDate=2026-01-09
+q059,detail,concert-venue,entity-relative,Tauren Wells,"Which venue is Tauren Wells playing at in Spokane, WA?","artist=Tauren Wells; city=Spokane, WA; expectedVenue=First Interstate Center for the Arts; date=2026-11-04"
+q060,detail,release,none,Change - EP,When was the album Change - EP by Stephen Stanley released?,album=Change - EP; artist=Stephen Stanley; expectedDate=2026-05-08
+q061,detail,concert-venue,entity-relative,Chandler Moore,"Which venue is Chandler Moore playing at in Columbia, SC?","artist=Chandler Moore; city=Columbia, SC; expectedVenue=Colonial Life Arena; date=2026-10-08"
+q062,detail,release,none,EAT,When was the album EAT by Brooke Ligertwood released?,album=EAT; artist=Brooke Ligertwood; expectedDate=2026-05-15
+q063,detail,concert-venue,entity-relative,Natalie Grant,"Which venue is Natalie Grant playing at in Tampa, FL?","artist=Natalie Grant; city=Tampa, FL; expectedVenue=Benchmark International Arena; date=2026-10-22"
+q064,detail,release,none,Jesus Is King,When was the album Jesus Is King by Matthew West released?,album=Jesus Is King; artist=Matthew West; expectedDate=2026-04-17
+q065,detail,concert-venue,entity-relative,Tauren Wells,"Which venue is Tauren Wells playing at in Dayton, OH?","artist=Tauren Wells; city=Dayton, OH; expectedVenue=Christian Life Center; date=2026-10-22"
+q066,detail,release,none,The Long Surrender,When was the album The Long Surrender by NEEDTOBREATHE released?,album=The Long Surrender; artist=NEEDTOBREATHE; expectedDate=2026-03-28
+q067,detail,concert-venue,entity-relative,Tauren Wells,"Which venue is Tauren Wells playing at in Frederick, MD?","artist=Tauren Wells; city=Frederick, MD; expectedVenue=International Community Church; date=2026-10-10"
+q068,detail,release,none,"BEHOLD (Acoustic Live), Vol. 2","When was the album BEHOLD (Acoustic Live), Vol. 2 by AOH Music released?","album=BEHOLD (Acoustic Live), Vol. 2; artist=AOH Music; expectedDate=2026-02-27"
+q069,detail,concert-venue,entity-relative,We Are Messengers,"Which venue is We Are Messengers playing at in Pace, FL?","artist=We Are Messengers; city=Pace, FL; expectedVenue=Immanuel Baptist Church; date=2026-10-11"
+q070,detail,release,none,You Lift Me Up,When was the album You Lift Me Up by Phil King released?,album=You Lift Me Up; artist=Phil King; expectedDate=2026-07-17
+q071,aggregate,year-list,none,,What gospel albums came out in 2026?,year=2026
+q072,aggregate,concerts-city,window,,"What gospel concerts are coming up in Cleveland, OH?","city=Cleveland, OH; knownConcerts=3"
+q073,aggregate,concerts-city,window,,"What gospel concerts are coming up in Atlanta, GA?","city=Atlanta, GA; knownConcerts=3"
+q074,aggregate,concerts-city,window,,"What gospel concerts are coming up in San Antonio, TX?","city=San Antonio, TX; knownConcerts=3"
+q075,aggregate,concerts-city,window,,"What gospel concerts are coming up in Arlington, TX?","city=Arlington, TX; knownConcerts=3"
+q076,aggregate,concerts-city,window,,"What gospel concerts are coming up in Tampa, FL?","city=Tampa, FL; knownConcerts=2"
+q077,aggregate,concerts-city,window,,"What gospel concerts are coming up in Cincinnati, OH?","city=Cincinnati, OH; knownConcerts=2"
+q078,aggregate,concerts-city,window,,"What gospel concerts are coming up in Tulsa, OK?","city=Tulsa, OK; knownConcerts=2"
+q079,aggregate,concerts-city,window,,"What gospel concerts are coming up in Peoria, IL?","city=Peoria, IL; knownConcerts=2"
+q080,aggregate,concerts-city,window,,"What gospel concerts are coming up in Lubbock, TX?","city=Lubbock, TX; knownConcerts=2"
+q081,aggregate,concerts-city,window,,"What gospel concerts are coming up in Evansville, IN?","city=Evansville, IN; knownConcerts=2"
+q082,aggregate,concerts-month,none,,What gospel concerts are happening in October 2026?,month=2026-10; knownConcerts=52
+q083,aggregate,concerts-month,none,,What gospel concerts are happening in November 2026?,month=2026-11; knownConcerts=15
+q084,aggregate,concerts-month,none,,What gospel concerts are happening in December 2026?,month=2026-12; knownConcerts=3
+q085,aggregate,concerts-month,none,,What gospel concerts are happening in February 2027?,month=2027-02; knownConcerts=2
+q086,fresh,artist-touring,entity-relative,Tauren Wells,Where is Tauren Wells playing live next?,artist=Tauren Wells; knownUpcoming=15
+q087,fresh,latest,entity-relative,Olivia Lane,What is Olivia Lane's latest single or album?,artist=Olivia Lane
+q088,fresh,new-releases,window,,What are the new gospel releases this month?,
+q089,fresh,artist-touring,entity-relative,Elevation Worship,Where is Elevation Worship playing live next?,artist=Elevation Worship; knownUpcoming=2
+q090,fresh,latest,entity-relative,Kutless,What is Kutless's latest single or album?,artist=Kutless
+q091,fresh,new-releases,window,,What gospel albums came out recently?,
+q092,fresh,artist-touring,entity-relative,TobyMac,Where is TobyMac playing live next?,artist=TobyMac; knownUpcoming=6
+q093,fresh,latest,entity-relative,The Belonging Co,What is The Belonging Co's latest single or album?,artist=The Belonging Co
+q094,fresh,new-releases,window,,Any new gospel music released in the last few weeks?,
+q095,fresh,artist-touring,entity-relative,Phil Wickham,Where is Phil Wickham playing live next?,artist=Phil Wickham; knownUpcoming=2
+q096,fresh,latest,entity-relative,Francesca Battistelli,What is Francesca Battistelli's latest single or album?,artist=Francesca Battistelli
+q097,fresh,artist-touring,entity-relative,Blessing Offor,Where is Blessing Offor playing live next?,artist=Blessing Offor; knownUpcoming=8
+q098,fresh,latest,entity-relative,Jeremy Riddle,What is Jeremy Riddle's latest single or album?,artist=Jeremy Riddle
+q099,fresh,artist-touring,entity-relative,KB,Where is KB playing live next?,artist=KB; knownUpcoming=1
+q100,fresh,latest,entity-relative,Chris Tomlin,What is Chris Tomlin's latest single or album?,artist=Chris Tomlin
+q101,fresh,artist-touring,entity-relative,Passion,Where is Passion playing live next?,artist=Passion; knownUpcoming=5
+q102,fresh,latest,entity-relative,TobyMac,What is TobyMac's latest single or album?,artist=TobyMac
+q103,fresh,artist-touring,entity-relative,Charity Gayle,Where is Charity Gayle playing live next?,artist=Charity Gayle; knownUpcoming=9
+q104,fresh,latest,entity-relative,Hillsong Worship,What is Hillsong Worship's latest single or album?,artist=Hillsong Worship
+q105,fresh,artist-touring,entity-relative,Natalie Grant,Where is Natalie Grant playing live next?,artist=Natalie Grant; knownUpcoming=1
+q106,fresh,latest,entity-relative,SEU Worship,What is SEU Worship's latest single or album?,artist=SEU Worship
+q107,fresh,artist-touring,entity-relative,We Are Messengers,Where is We Are Messengers playing live next?,artist=We Are Messengers; knownUpcoming=2
+q108,fresh,latest,entity-relative,Austin French,What is Austin French's latest single or album?,artist=Austin French
+q109,fresh,artist-touring,entity-relative,Bethel Music,Where is Bethel Music playing live next?,artist=Bethel Music; knownUpcoming=2
+q110,fresh,latest,entity-relative,We The Kingdom,What is We The Kingdom's latest single or album?,artist=We The Kingdom
+q111,fresh,artist-touring,entity-relative,Tye Tribbett,Where is Tye Tribbett playing live next?,artist=Tye Tribbett; knownUpcoming=1
+q112,fresh,latest,entity-relative,NF,What is NF's latest single or album?,artist=NF
+q113,fresh,artist-touring,entity-relative,Zach Williams,Where is Zach Williams playing live next?,artist=Zach Williams; knownUpcoming=14
+q114,fresh,latest,entity-relative,Skillet,What is Skillet's latest single or album?,artist=Skillet
+q115,fresh,artist-touring,entity-relative,Chandler Moore,Where is Chandler Moore playing live next?,artist=Chandler Moore; knownUpcoming=6

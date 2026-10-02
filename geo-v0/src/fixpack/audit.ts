@@ -1,7 +1,7 @@
 import * as cheerio from 'cheerio';
 import { fetchWithRetry, mapLimit } from '../util/http.js';
 import { log } from '../util/log.js';
-import { writeJson, writeText, readJson, paths } from '../util/fsx.js';
+import { writeJson, writeText, readJson, readJsonOr, paths } from '../util/fsx.js';
 import { globToRegExp, pathOf } from '../util/url.js';
 import { fetchSitemap } from '../probe/sitemap.js';
 import type { EntitiesFile, SiteProfile } from '../types.js';
@@ -177,15 +177,42 @@ export async function runAudit(
         },
         retries: 2,
         timeoutMs: 45_000,
+        noRetryStatus: [404, 410],
       });
-      return { url, status: res.status, html: await res.text() };
+      return { url, status: res.status, html: await res.text(), finalUrl: res.url, redirected: res.redirected };
     } catch (e) {
-      return { url, status: 0, html: '', error: (e as Error).message };
+      return { url, status: 0, html: '', finalUrl: url, redirected: false, error: (e as Error).message };
     }
   });
 
-  for (const r of results) {
-    if (!r.html) continue;
+  /*
+   * 失效页面先剔出去,不参与渲染判定。
+   * 一个 404 或跳首页的页面不是"客户端渲染的空壳" —— 混进去会被报成 CSR blocker,
+   * 把人送去查一个不存在的渲染问题。它们单独报为 sitemap 死链。
+   */
+  const deadSample: { url: string; reason: string }[] = [];
+  const siteNameLc = site.siteName.trim().toLowerCase();
+  const live = results.filter((r) => {
+    if (r.status === 404 || r.status === 410) {
+      deadSample.push({ url: r.url, reason: `HTTP ${r.status}` });
+      return false;
+    }
+    if (r.redirected && pathOf(r.finalUrl) !== pathOf(r.url)) {
+      deadSample.push({ url: r.url, reason: `重定向到 ${pathOf(r.finalUrl) || '/'}` });
+      return false;
+    }
+    if (!r.html) return false;
+    const $$ = cheerio.load(r.html);
+    const label = ($$('h1').first().text().trim() || $$('title').first().text().trim()).toLowerCase();
+    const hasLd = $$('script[type="application/ld+json"]').length > 0;
+    if (label === siteNameLc && !hasLd) {
+      deadSample.push({ url: r.url, reason: '返回全站通用页(软 404)' });
+      return false;
+    }
+    return true;
+  });
+
+  for (const r of live) {
     const $ = cheerio.load(r.html);
     const title = $('title').first().text().trim();
     const h1 = $('h1').first().text().trim();
@@ -247,7 +274,30 @@ export async function runAudit(
     if (meta.length > 20) withMeta++;
   }
 
-  const n = results.filter((r) => r.html).length || 1;
+  const n = live.length || 1;
+
+  // 死链:优先用 extract 的全量结果,没有就用本次抽样的结果
+  const deadFile = await readJsonOr<{ total: number; dead: { url: string; reason: string }[] } | null>(
+    paths.data(site.id, 'dead-urls.json'),
+    null,
+  );
+  const deadList = deadFile?.dead.length ? deadFile.dead : deadSample;
+  const deadBase = deadFile?.dead.length ? deadFile.total : results.length;
+  if (deadList.length) {
+    findings.push({
+      id: 'sitemap-dead-urls',
+      severity: 'warn',
+      title: `sitemap 列出的实体 URL 里有 ${deadList.length}/${deadBase} 个已失效` +
+        `(${deadFile?.dead.length ? '全量' : '抽样'})`,
+      detail:
+        '抓取器沿 sitemap 抓到的是 404、跳首页或通用页。死链会消耗抓取配额、拉低整站质量信号,' +
+        '而且推 IndexNow 时会把它们一起推出去。' +
+        `示例: ${deadList.slice(0, 3).map((d) => `${d.url}(${d.reason})`).join(', ')}`,
+      fix:
+        'sitemap 只列出仍然存在的实体。如果记录是被删掉的,sitemap 要同步;' +
+        '更好的做法是不删已结束的演出,保留页面并标注为过去的场次 —— 历史页面本身也能回答问题。',
+    });
+  }
 
   if (csrPages.length > 0) {
     findings.push({
