@@ -9,6 +9,7 @@ import { scoreRun, listRuns } from './probe/score.js';
 import { verifyEngines } from './probe/verify.js';
 import { buildBaselineReport } from './report/baseline.js';
 import { buildDiffReport } from './report/diff.js';
+import { exportQueries } from './report/queries.js';
 import { runAudit } from './fixpack/audit.js';
 import { buildFixpack } from './fixpack/build.js';
 import { generateKey, submitUrls } from './fixpack/indexnow.js';
@@ -83,6 +84,7 @@ geo-v0 — 检测 / 修复 / 复测闭环
   score     --site <id>  --run <run_id>
   report    --site <id>  --run <run_id>
   diff      --site <id>  --runs <run_id,run_id,...>
+  export    --site <id>                          题库导出成 Markdown + CSV
   fixpack   --site <id>  [--out <dir>]  [--new-release-days 90]  [--min-aggregate-items 3]
   indexnow  --site <id>  [--generate-key]  [--submit]  [--dry-run]
   runs      列出已有 run_id
@@ -106,7 +108,7 @@ async function main(): Promise<void> {
     return;
   }
 
-  const needSite = ['audit', 'extract', 'queries', 'probe', 'score', 'report', 'diff', 'fixpack', 'indexnow'];
+  const needSite = ['audit', 'extract', 'queries', 'probe', 'score', 'report', 'diff', 'export', 'fixpack', 'indexnow'];
   const siteId = str(args, 'site');
   if (needSite.includes(cmd) && !siteId) {
     throw new Error(`命令 ${cmd} 需要 --site <id>。可用配置见 sites/ 目录。`);
@@ -184,6 +186,11 @@ async function main(): Promise<void> {
       const run = str(args, 'run');
       if (!run) throw new Error('report 需要 --run <run_id>');
       await buildBaselineReport(site!, run);
+      break;
+    }
+
+    case 'export': {
+      await exportQueries(site!);
       break;
     }
 

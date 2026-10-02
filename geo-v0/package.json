@@ -21,7 +21,8 @@
     "indexnow": "tsx src/cli.ts indexnow",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test src/**/*.test.ts",
-    "e2e": "tsx src/testkit/e2e.ts"
+    "e2e": "tsx src/testkit/e2e.ts",
+    "export": "tsx src/cli.ts export"
   },
   "dependencies": {
     "cheerio": "^1.0.0"
