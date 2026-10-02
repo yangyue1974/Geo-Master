@@ -1,0 +1,23 @@
+{
+  "site": "gospelhub",
+  "siteDomain": "gospelhub.love",
+  "auditedAt": "2026-10-02T12:22:22.705Z",
+  "findings": [
+    {
+      "id": "csr-rendering",
+      "severity": "ok",
+      "title": "全部 5 个抽样实体页服务端渲染正常",
+      "detail": "抓取器裸抓即可拿到实体内容。这是所有后续修复能生效的前提。"
+    }
+  ],
+  "stats": {
+    "robotsFound": true,
+    "sitemapUrls": 461,
+    "entityUrlsInSitemap": 457,
+    "pagesSampled": 5,
+    "pagesServerRendered": 5,
+    "pagesWithJsonLd": 5,
+    "pagesWithEntityInTitle": 5,
+    "pagesWithMetaDescription": 5
+  }
+}

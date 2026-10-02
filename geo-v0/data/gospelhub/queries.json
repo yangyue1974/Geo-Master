@@ -1,0 +1,1454 @@
+{
+  "schemaVersion": 1,
+  "site": "gospelhub",
+  "generatedAt": "2026-10-02T12:22:55.512Z",
+  "fingerprint": "63d00b24df192921",
+  "counts": {
+    "control": 20,
+    "detail": 50,
+    "aggregate": 15,
+    "fresh": 30
+  },
+  "queries": [
+    {
+      "id": "q001",
+      "tier": "control",
+      "template": "who-is",
+      "entity": "Stephen Stanley",
+      "entityUrl": "https://www.gospelhub.love/artists/64603464-f241-43f5-8355-fe094ab497e3",
+      "query": "Who is Stephen Stanley?",
+      "timeSensitivity": "none"
+    },
+    {
+      "id": "q002",
+      "tier": "control",
+      "template": "who-is",
+      "entity": "Brandon Lake",
+      "entityUrl": "https://www.gospelhub.love/artists/048536b8-f251-4c4b-86d4-45999280dce6",
+      "query": "Who is Brandon Lake?",
+      "timeSensitivity": "none"
+    },
+    {
+      "id": "q003",
+      "tier": "control",
+      "template": "who-is",
+      "entity": "Hannah McClure",
+      "entityUrl": "https://www.gospelhub.love/artists/d185eeca-ce7f-4e41-9d9c-e75beceeb0c9",
+      "query": "Who is Hannah McClure?",
+      "timeSensitivity": "none"
+    },
+    {
+      "id": "q004",
+      "tier": "control",
+      "template": "who-is",
+      "entity": "NF",
+      "entityUrl": "https://www.gospelhub.love/artists/d0468dc4-c9a6-4b8e-99bf-a4c125b920b3",
+      "query": "Who is NF?",
+      "timeSensitivity": "none"
+    },
+    {
+      "id": "q005",
+      "tier": "control",
+      "template": "who-is",
+      "entity": "Jervis Campbell",
+      "entityUrl": "https://www.gospelhub.love/artists/34485d0b-87a8-491f-818f-cf7a4a073d76",
+      "query": "Who is Jervis Campbell?",
+      "timeSensitivity": "none"
+    },
+    {
+      "id": "q006",
+      "tier": "control",
+      "template": "who-is",
+      "entity": "The Red Clay Strays",
+      "entityUrl": "https://www.gospelhub.love/artists/e66b41a2-a8f7-4885-8989-08a7f40dd858",
+      "query": "Who is The Red Clay Strays?",
+      "timeSensitivity": "none"
+    },
+    {
+      "id": "q007",
+      "tier": "control",
+      "template": "who-is",
+      "entity": "Maverick City Music",
+      "entityUrl": "https://www.gospelhub.love/artists/9e37db11-2275-4da1-ba85-e91c645da374",
+      "query": "Who is Maverick City Music?",
+      "timeSensitivity": "none"
+    },
+    {
+      "id": "q008",
+      "tier": "control",
+      "template": "who-is",
+      "entity": "Patrick Mayberry",
+      "entityUrl": "https://www.gospelhub.love/artists/cfd1d62d-06c1-4817-8b66-220fc45ad3d4",
+      "query": "Who is Patrick Mayberry?",
+      "timeSensitivity": "none"
+    },
+    {
+      "id": "q009",
+      "tier": "control",
+      "template": "who-is",
+      "entity": "Ellie Holcomb",
+      "entityUrl": "https://www.gospelhub.love/artists/ca4f7f9f-4943-4d07-99ab-4b4c852f031c",
+      "query": "Who is Ellie Holcomb?",
+      "timeSensitivity": "none"
+    },
+    {
+      "id": "q010",
+      "tier": "control",
+      "template": "who-is",
+      "entity": "MercyMe",
+      "entityUrl": "https://www.gospelhub.love/artists/fbb101ef-2a38-4524-ab73-cd138d332d23",
+      "query": "Who is MercyMe?",
+      "timeSensitivity": "none"
+    },
+    {
+      "id": "q011",
+      "tier": "control",
+      "template": "who-is",
+      "entity": "Darlene Zschech",
+      "entityUrl": "https://www.gospelhub.love/artists/18f3165e-6b01-42ea-9686-3d71692d0750",
+      "query": "Who is Darlene Zschech?",
+      "timeSensitivity": "none"
+    },
+    {
+      "id": "q012",
+      "tier": "control",
+      "template": "who-is",
+      "entity": "AOH Music",
+      "entityUrl": "https://www.gospelhub.love/artists/484eeda7-1654-4ba2-81fc-a15e94944731",
+      "query": "Who is AOH Music?",
+      "timeSensitivity": "none"
+    },
+    {
+      "id": "q013",
+      "tier": "control",
+      "template": "who-is",
+      "entity": "NONAH",
+      "entityUrl": "https://www.gospelhub.love/artists/cff3d63f-0e5b-4c44-98b5-94970db2fb84",
+      "query": "Who is NONAH?",
+      "timeSensitivity": "none"
+    },
+    {
+      "id": "q014",
+      "tier": "control",
+      "template": "who-is",
+      "entity": "Love & The Outcome",
+      "entityUrl": "https://www.gospelhub.love/artists/a3c3979b-faaf-4817-8781-f9c4626ac313",
+      "query": "Who is Love & The Outcome?",
+      "timeSensitivity": "none"
+    },
+    {
+      "id": "q015",
+      "tier": "control",
+      "template": "who-is",
+      "entity": "Jesus Culture",
+      "entityUrl": "https://www.gospelhub.love/artists/5a6c1d36-2ea7-4c02-81c1-c9c4efe8f864",
+      "query": "Who is Jesus Culture?",
+      "timeSensitivity": "none"
+    },
+    {
+      "id": "q016",
+      "tier": "control",
+      "template": "who-is",
+      "entity": "Brooke Ligertwood",
+      "entityUrl": "https://www.gospelhub.love/artists/971f0990-5404-4d1b-af10-58c998218cdb",
+      "query": "Who is Brooke Ligertwood?",
+      "timeSensitivity": "none"
+    },
+    {
+      "id": "q017",
+      "tier": "control",
+      "template": "who-is",
+      "entity": "Bella Taylor Smith",
+      "entityUrl": "https://www.gospelhub.love/artists/34e0a785-ba21-47f0-a4da-95653827aca6",
+      "query": "Who is Bella Taylor Smith?",
+      "timeSensitivity": "none"
+    },
+    {
+      "id": "q018",
+      "tier": "control",
+      "template": "who-is",
+      "entity": "Crowder",
+      "entityUrl": "https://www.gospelhub.love/artists/d8ea18b7-ba4c-4e4a-b2c3-0124aeb3315b",
+      "query": "Who is Crowder?",
+      "timeSensitivity": "none"
+    },
+    {
+      "id": "q019",
+      "tier": "control",
+      "template": "who-is",
+      "entity": "Jenn Johnson",
+      "entityUrl": "https://www.gospelhub.love/artists/b3fa1eb4-fbda-43e1-84ce-a276b905b2db",
+      "query": "Who is Jenn Johnson?",
+      "timeSensitivity": "none"
+    },
+    {
+      "id": "q020",
+      "tier": "control",
+      "template": "who-is",
+      "entity": "Brian & Jenn Johnson",
+      "entityUrl": "https://www.gospelhub.love/artists/57e20bd2-ae76-455c-b49f-38217955fa0b",
+      "query": "Who is Brian & Jenn Johnson?",
+      "timeSensitivity": "none"
+    },
+    {
+      "id": "q021",
+      "tier": "detail",
+      "template": "chronology",
+      "entity": "Brandon Lake",
+      "entityUrl": "https://www.gospelhub.love/artists/048536b8-f251-4c4b-86d4-45999280dce6",
+      "query": "List Brandon Lake's albums in chronological order.",
+      "timeSensitivity": "none",
+      "basis": {
+        "artist": "Brandon Lake",
+        "knownAlbums": "4"
+      }
+    },
+    {
+      "id": "q022",
+      "tier": "detail",
+      "template": "concert-venue",
+      "entity": "Passion",
+      "entityUrl": "https://www.gospelhub.love/concerts/2568c464-e7d4-4130-bfb5-d1d8eba8a5c8",
+      "query": "Which venue is Passion playing at in Arlington, TX?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Passion",
+        "city": "Arlington, TX",
+        "expectedVenue": "Globe Life Field",
+        "date": "2026-12-31"
+      }
+    },
+    {
+      "id": "q023",
+      "tier": "detail",
+      "template": "release",
+      "entity": "Faith Hope Love",
+      "entityUrl": "https://www.gospelhub.love/releases/8d9806aa-3728-460b-903e-37c0313b65d8",
+      "query": "When was the album Faith Hope Love by We Are Messengers released?",
+      "timeSensitivity": "none",
+      "basis": {
+        "album": "Faith Hope Love",
+        "artist": "We Are Messengers",
+        "expectedDate": "2026-02-06"
+      }
+    },
+    {
+      "id": "q024",
+      "tier": "detail",
+      "template": "chronology",
+      "entity": "Matthew West",
+      "entityUrl": "https://www.gospelhub.love/artists/52e5766a-b2f2-48b1-bfc5-9364a58fe984",
+      "query": "List Matthew West's albums in chronological order.",
+      "timeSensitivity": "none",
+      "basis": {
+        "artist": "Matthew West",
+        "knownAlbums": "2"
+      }
+    },
+    {
+      "id": "q025",
+      "tier": "detail",
+      "template": "concert-venue",
+      "entity": "Blessing Offor",
+      "entityUrl": "https://www.gospelhub.love/concerts/d7febb95-d0d8-43dc-a8c4-eaa2346b59a8",
+      "query": "Which venue is Blessing Offor playing at in San Antonio, TX?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Blessing Offor",
+        "city": "San Antonio, TX",
+        "expectedVenue": "Paper Tiger",
+        "date": "2026-10-21"
+      }
+    },
+    {
+      "id": "q026",
+      "tier": "detail",
+      "template": "release",
+      "entity": "House of Worship",
+      "entityUrl": "https://www.gospelhub.love/releases/0370f0da-81f4-4ceb-b4d3-eb406a6ec2b9",
+      "query": "When was the album House of Worship by Lakewood Music released?",
+      "timeSensitivity": "none",
+      "basis": {
+        "album": "House of Worship",
+        "artist": "Lakewood Music",
+        "expectedDate": "2026-03-20"
+      }
+    },
+    {
+      "id": "q027",
+      "tier": "detail",
+      "template": "chronology",
+      "entity": "We The Kingdom",
+      "entityUrl": "https://www.gospelhub.love/artists/865381ca-9795-4619-afd4-8b3db54944f2",
+      "query": "List We The Kingdom's albums in chronological order.",
+      "timeSensitivity": "none",
+      "basis": {
+        "artist": "We The Kingdom",
+        "knownAlbums": "2"
+      }
+    },
+    {
+      "id": "q028",
+      "tier": "detail",
+      "template": "concert-venue",
+      "entity": "Zach Williams",
+      "entityUrl": "https://www.gospelhub.love/concerts/275801a0-92dd-454c-bfb4-b6eea1479d50",
+      "query": "Which venue is Zach Williams playing at in Duluth, MN?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Zach Williams",
+        "city": "Duluth, MN",
+        "expectedVenue": "DECC Symphony Hall",
+        "date": "2026-10-29"
+      }
+    },
+    {
+      "id": "q029",
+      "tier": "detail",
+      "template": "release",
+      "entity": "THIS CANNOT BE SOLD",
+      "entityUrl": "https://www.gospelhub.love/releases/03d760f6-841d-4d73-a83a-1f2117b7164b",
+      "query": "When was the album THIS CANNOT BE SOLD by KB released?",
+      "timeSensitivity": "none",
+      "basis": {
+        "album": "THIS CANNOT BE SOLD",
+        "artist": "KB",
+        "expectedDate": "2026-07-10"
+      }
+    },
+    {
+      "id": "q030",
+      "tier": "detail",
+      "template": "chronology",
+      "entity": "Tauren Wells",
+      "entityUrl": "https://www.gospelhub.love/artists/8e1ccf63-f67f-488f-b69c-3c980057a047",
+      "query": "List Tauren Wells's albums in chronological order.",
+      "timeSensitivity": "none",
+      "basis": {
+        "artist": "Tauren Wells",
+        "knownAlbums": "2"
+      }
+    },
+    {
+      "id": "q031",
+      "tier": "detail",
+      "template": "concert-venue",
+      "entity": "Tauren Wells",
+      "entityUrl": "https://www.gospelhub.love/concerts/a9f71b51-54ad-4e22-aac1-a8464f16a4b6",
+      "query": "Which venue is Tauren Wells playing at in Lubbock, TX?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Tauren Wells",
+        "city": "Lubbock, TX",
+        "expectedVenue": "Helen DeVitt Jones Theater, Buddy Holly Hall",
+        "date": "2026-10-27"
+      }
+    },
+    {
+      "id": "q032",
+      "tier": "detail",
+      "template": "release",
+      "entity": "So Long",
+      "entityUrl": "https://www.gospelhub.love/releases/e433145b-81c0-4d48-9ec3-9272be952c71",
+      "query": "When was the album So Long by Peter Burton released?",
+      "timeSensitivity": "none",
+      "basis": {
+        "album": "So Long",
+        "artist": "Peter Burton",
+        "expectedDate": "2026-04-24"
+      }
+    },
+    {
+      "id": "q033",
+      "tier": "detail",
+      "template": "concert-venue",
+      "entity": "Zach Williams",
+      "entityUrl": "https://www.gospelhub.love/concerts/fc1bf3e1-506d-4942-9ada-29e209390ca7",
+      "query": "Which venue is Zach Williams playing at in Bloomington, IN?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Zach Williams",
+        "city": "Bloomington, IN",
+        "expectedVenue": "Indiana University Auditorium",
+        "date": "2026-10-23"
+      }
+    },
+    {
+      "id": "q034",
+      "tier": "detail",
+      "template": "release",
+      "entity": "Mad At God",
+      "entityUrl": "https://www.gospelhub.love/releases/d505c162-f692-4939-bda1-5ec984daa082",
+      "query": "When was the album Mad At God by Jenn Johnson released?",
+      "timeSensitivity": "none",
+      "basis": {
+        "album": "Mad At God",
+        "artist": "Jenn Johnson",
+        "expectedDate": "2026-04-03"
+      }
+    },
+    {
+      "id": "q035",
+      "tier": "detail",
+      "template": "concert-venue",
+      "entity": "TobyMac",
+      "entityUrl": "https://www.gospelhub.love/concerts/332b2db2-f83f-445f-9636-b806cf190470",
+      "query": "Which venue is TobyMac playing at in Evansville, IN?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "TobyMac",
+        "city": "Evansville, IN",
+        "expectedVenue": "Ford Center",
+        "date": "2026-11-06"
+      }
+    },
+    {
+      "id": "q036",
+      "tier": "detail",
+      "template": "release",
+      "entity": "Moonlight",
+      "entityUrl": "https://www.gospelhub.love/releases/f7b4606b-3c4e-467d-8679-62a06d15d2f6",
+      "query": "When was the album Moonlight by Chelsea Plank released?",
+      "timeSensitivity": "none",
+      "basis": {
+        "album": "Moonlight",
+        "artist": "Chelsea Plank",
+        "expectedDate": "2026-05-01"
+      }
+    },
+    {
+      "id": "q037",
+      "tier": "detail",
+      "template": "concert-venue",
+      "entity": "Bethel Music",
+      "entityUrl": "https://www.gospelhub.love/concerts/00678152-4032-4dc7-95e9-36f8183a42d4",
+      "query": "Which venue is Bethel Music playing at in New York?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Bethel Music",
+        "city": "New York",
+        "expectedVenue": "Irving Plaza",
+        "date": "2026-10-17"
+      }
+    },
+    {
+      "id": "q038",
+      "tier": "detail",
+      "template": "release",
+      "entity": "Break Open (Live)",
+      "entityUrl": "https://www.gospelhub.love/releases/5ef32cd7-c5f5-46f4-9f06-0bb328872e7f",
+      "query": "When was the album Break Open (Live) by Pat Barrett released?",
+      "timeSensitivity": "none",
+      "basis": {
+        "album": "Break Open (Live)",
+        "artist": "Pat Barrett",
+        "expectedDate": "2026-03-13"
+      }
+    },
+    {
+      "id": "q039",
+      "tier": "detail",
+      "template": "concert-venue",
+      "entity": "Zach Williams",
+      "entityUrl": "https://www.gospelhub.love/concerts/e8f74f24-e59d-44d0-b038-19dd52968ec0",
+      "query": "Which venue is Zach Williams playing at in Longview, TX?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Zach Williams",
+        "city": "Longview, TX",
+        "expectedVenue": "LeTourneau University Belcher Center",
+        "date": "2026-11-05"
+      }
+    },
+    {
+      "id": "q040",
+      "tier": "detail",
+      "template": "release",
+      "entity": "Sparrow",
+      "entityUrl": "https://www.gospelhub.love/releases/756755e7-0efd-4dda-b9f1-f8bbaffc34af",
+      "query": "When was the album Sparrow by Love & The Outcome released?",
+      "timeSensitivity": "none",
+      "basis": {
+        "album": "Sparrow",
+        "artist": "Love & The Outcome",
+        "expectedDate": "2026-03-13"
+      }
+    },
+    {
+      "id": "q041",
+      "tier": "detail",
+      "template": "concert-venue",
+      "entity": "Phil Wickham",
+      "entityUrl": "https://www.gospelhub.love/concerts/e12d1ba2-aa0a-436f-a7a2-5c1f96446db6",
+      "query": "Which venue is Phil Wickham playing at in Anaheim?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Phil Wickham",
+        "city": "Anaheim",
+        "expectedVenue": "Honda Center",
+        "date": "2026-10-15"
+      }
+    },
+    {
+      "id": "q042",
+      "tier": "detail",
+      "template": "release",
+      "entity": "Closer (Live in Chicago)",
+      "entityUrl": "https://www.gospelhub.love/releases/cbdd3513-17a6-49c9-bd10-8212d6899055",
+      "query": "When was the album Closer (Live in Chicago) by Jonathan McReynolds released?",
+      "timeSensitivity": "none",
+      "basis": {
+        "album": "Closer (Live in Chicago)",
+        "artist": "Jonathan McReynolds",
+        "expectedDate": "2026-03-27"
+      }
+    },
+    {
+      "id": "q043",
+      "tier": "detail",
+      "template": "concert-venue",
+      "entity": "TobyMac",
+      "entityUrl": "https://www.gospelhub.love/concerts/9bb91905-413a-4499-bb28-491c8f4607e9",
+      "query": "Which venue is TobyMac playing at in Des Moines, IA?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "TobyMac",
+        "city": "Des Moines, IA",
+        "expectedVenue": "Casey's Center",
+        "date": "2026-11-19"
+      }
+    },
+    {
+      "id": "q044",
+      "tier": "detail",
+      "template": "release",
+      "entity": "The Reminder (Deluxe)",
+      "entityUrl": "https://www.gospelhub.love/releases/f5d1817b-c081-40a7-a842-e1ba4ca99335",
+      "query": "When was the album The Reminder (Deluxe) by TAYA released?",
+      "timeSensitivity": "none",
+      "basis": {
+        "album": "The Reminder (Deluxe)",
+        "artist": "TAYA",
+        "expectedDate": "2026-04-24"
+      }
+    },
+    {
+      "id": "q045",
+      "tier": "detail",
+      "template": "concert-venue",
+      "entity": "Blessing Offor",
+      "entityUrl": "https://www.gospelhub.love/concerts/61cb4f80-da64-49fc-bcc9-f4facbdef672",
+      "query": "Which venue is Blessing Offor playing at in San Francisco, CA?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Blessing Offor",
+        "city": "San Francisco, CA",
+        "expectedVenue": "Cafe du Nord",
+        "date": "2026-10-25"
+      }
+    },
+    {
+      "id": "q046",
+      "tier": "detail",
+      "template": "release",
+      "entity": "DAY",
+      "entityUrl": "https://www.gospelhub.love/releases/4816ba8e-adcf-4e37-ac52-788b4bcc4ff6",
+      "query": "When was the album DAY by Jonathan Ogden released?",
+      "timeSensitivity": "none",
+      "basis": {
+        "album": "DAY",
+        "artist": "Jonathan Ogden",
+        "expectedDate": "2026-03-14"
+      }
+    },
+    {
+      "id": "q047",
+      "tier": "detail",
+      "template": "concert-venue",
+      "entity": "Tauren Wells",
+      "entityUrl": "https://www.gospelhub.love/concerts/e5812c10-a90e-4987-bbae-0ed59cf77007",
+      "query": "Which venue is Tauren Wells playing at in Louisville, KY?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Tauren Wells",
+        "city": "Louisville, KY",
+        "expectedVenue": "The Louisville Palace",
+        "date": "2026-10-16"
+      }
+    },
+    {
+      "id": "q048",
+      "tier": "detail",
+      "template": "release",
+      "entity": "Just That Good (Live From Passion 2026)",
+      "entityUrl": "https://www.gospelhub.love/releases/ea610d36-3e0c-4e55-84b3-f1e31a7a5ee3",
+      "query": "When was the album Just That Good (Live From Passion 2026) by Passion released?",
+      "timeSensitivity": "none",
+      "basis": {
+        "album": "Just That Good (Live From Passion 2026)",
+        "artist": "Passion",
+        "expectedDate": "2026-03-21"
+      }
+    },
+    {
+      "id": "q049",
+      "tier": "detail",
+      "template": "concert-venue",
+      "entity": "Zach Williams",
+      "entityUrl": "https://www.gospelhub.love/concerts/92113dea-1cac-44a2-9339-94c7c13e55c1",
+      "query": "Which venue is Zach Williams playing at in Evans, GA?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Zach Williams",
+        "city": "Evans, GA",
+        "expectedVenue": "Columbia County Performing Arts Center",
+        "date": "2026-11-13"
+      }
+    },
+    {
+      "id": "q050",
+      "tier": "detail",
+      "template": "release",
+      "entity": "breakups with best friends",
+      "entityUrl": "https://www.gospelhub.love/releases/a609880d-a4c9-4a46-82b9-ad48023c9957",
+      "query": "When was the album breakups with best friends by Zoe Levert released?",
+      "timeSensitivity": "none",
+      "basis": {
+        "album": "breakups with best friends",
+        "artist": "Zoe Levert",
+        "expectedDate": "2026-04-17"
+      }
+    },
+    {
+      "id": "q051",
+      "tier": "detail",
+      "template": "concert-venue",
+      "entity": "Zach Williams",
+      "entityUrl": "https://www.gospelhub.love/concerts/2066d37a-0a5c-4639-9990-270a559b92ca",
+      "query": "Which venue is Zach Williams playing at in Evansville, IN?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Zach Williams",
+        "city": "Evansville, IN",
+        "expectedVenue": "Old National Events Plaza",
+        "date": "2026-10-17"
+      }
+    },
+    {
+      "id": "q052",
+      "tier": "detail",
+      "template": "release",
+      "entity": "COULD BE TONIGHT",
+      "entityUrl": "https://www.gospelhub.love/releases/7b5ac8f8-6b02-4a6f-9382-06309e2b9a03",
+      "query": "When was the album COULD BE TONIGHT by Hulvey released?",
+      "timeSensitivity": "none",
+      "basis": {
+        "album": "COULD BE TONIGHT",
+        "artist": "Hulvey",
+        "expectedDate": "2026-04-17"
+      }
+    },
+    {
+      "id": "q053",
+      "tier": "detail",
+      "template": "concert-venue",
+      "entity": "Charity Gayle",
+      "entityUrl": "https://www.gospelhub.love/concerts/2612786c-f0b2-4137-9dc7-fa45cbbe2a91",
+      "query": "Which venue is Charity Gayle playing at in Cleveland, OH?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Charity Gayle",
+        "city": "Cleveland, OH",
+        "expectedVenue": "Wolstein Center at CSU",
+        "date": "2026-10-15"
+      }
+    },
+    {
+      "id": "q054",
+      "tier": "detail",
+      "template": "release",
+      "entity": "Here Comes the Wind",
+      "entityUrl": "https://www.gospelhub.love/releases/f2a887dc-fbf5-40cd-9b13-15cd30eae7f2",
+      "query": "When was the album Here Comes the Wind by Travis Greene released?",
+      "timeSensitivity": "none",
+      "basis": {
+        "album": "Here Comes the Wind",
+        "artist": "Travis Greene",
+        "expectedDate": "2026-05-01"
+      }
+    },
+    {
+      "id": "q055",
+      "tier": "detail",
+      "template": "concert-venue",
+      "entity": "Zach Williams",
+      "entityUrl": "https://www.gospelhub.love/concerts/0178d139-5284-4de4-84ea-afdc3282998a",
+      "query": "Which venue is Zach Williams playing at in Knoxville, TN?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Zach Williams",
+        "city": "Knoxville, TN",
+        "expectedVenue": "Knoxville Civic Auditorium and Coliseum",
+        "date": "2026-10-15"
+      }
+    },
+    {
+      "id": "q056",
+      "tier": "detail",
+      "template": "release",
+      "entity": "Live From Liberty University",
+      "entityUrl": "https://www.gospelhub.love/releases/bc70bfc4-fa30-432c-add4-63a62b482db5",
+      "query": "When was the album Live From Liberty University by Meredith Andrews released?",
+      "timeSensitivity": "none",
+      "basis": {
+        "album": "Live From Liberty University",
+        "artist": "Meredith Andrews",
+        "expectedDate": "2026-04-03"
+      }
+    },
+    {
+      "id": "q057",
+      "tier": "detail",
+      "template": "concert-venue",
+      "entity": "TobyMac",
+      "entityUrl": "https://www.gospelhub.love/concerts/c8039694-2d5e-4d4d-86f1-1d0406d5d722",
+      "query": "Which venue is TobyMac playing at in Sioux Falls, SD?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "TobyMac",
+        "city": "Sioux Falls, SD",
+        "expectedVenue": "Denny Sanford PREMIER Center",
+        "date": "2027-03-16"
+      }
+    },
+    {
+      "id": "q058",
+      "tier": "detail",
+      "template": "release",
+      "entity": "Good",
+      "entityUrl": "https://www.gospelhub.love/releases/95fc81ec-acdd-41f3-ae99-20b94997af0b",
+      "query": "When was the album Good by Matthew West released?",
+      "timeSensitivity": "none",
+      "basis": {
+        "album": "Good",
+        "artist": "Matthew West",
+        "expectedDate": "2026-01-09"
+      }
+    },
+    {
+      "id": "q059",
+      "tier": "detail",
+      "template": "concert-venue",
+      "entity": "Tauren Wells",
+      "entityUrl": "https://www.gospelhub.love/concerts/c76e7aa9-04a4-4653-9c65-6e333c00468d",
+      "query": "Which venue is Tauren Wells playing at in Spokane, WA?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Tauren Wells",
+        "city": "Spokane, WA",
+        "expectedVenue": "First Interstate Center for the Arts",
+        "date": "2026-11-04"
+      }
+    },
+    {
+      "id": "q060",
+      "tier": "detail",
+      "template": "release",
+      "entity": "Change - EP",
+      "entityUrl": "https://www.gospelhub.love/releases/462a90a6-2baa-4159-b14d-adbc120ee1e4",
+      "query": "When was the album Change - EP by Stephen Stanley released?",
+      "timeSensitivity": "none",
+      "basis": {
+        "album": "Change - EP",
+        "artist": "Stephen Stanley",
+        "expectedDate": "2026-05-08"
+      }
+    },
+    {
+      "id": "q061",
+      "tier": "detail",
+      "template": "concert-venue",
+      "entity": "Chandler Moore",
+      "entityUrl": "https://www.gospelhub.love/concerts/ba8851f0-aaa8-4aaf-bc80-c182d3f4ff34",
+      "query": "Which venue is Chandler Moore playing at in Columbia, SC?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Chandler Moore",
+        "city": "Columbia, SC",
+        "expectedVenue": "Colonial Life Arena",
+        "date": "2026-10-08"
+      }
+    },
+    {
+      "id": "q062",
+      "tier": "detail",
+      "template": "release",
+      "entity": "EAT",
+      "entityUrl": "https://www.gospelhub.love/releases/c1709357-ef19-42d7-8a25-c890664d9ebd",
+      "query": "When was the album EAT by Brooke Ligertwood released?",
+      "timeSensitivity": "none",
+      "basis": {
+        "album": "EAT",
+        "artist": "Brooke Ligertwood",
+        "expectedDate": "2026-05-15"
+      }
+    },
+    {
+      "id": "q063",
+      "tier": "detail",
+      "template": "concert-venue",
+      "entity": "Natalie Grant",
+      "entityUrl": "https://www.gospelhub.love/concerts/0a477469-48ff-40b8-9ddf-8420db8ab876",
+      "query": "Which venue is Natalie Grant playing at in Tampa, FL?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Natalie Grant",
+        "city": "Tampa, FL",
+        "expectedVenue": "Benchmark International Arena",
+        "date": "2026-10-22"
+      }
+    },
+    {
+      "id": "q064",
+      "tier": "detail",
+      "template": "release",
+      "entity": "Jesus Is King",
+      "entityUrl": "https://www.gospelhub.love/releases/9bca9baf-da65-478c-ac1e-ae1abc84953f",
+      "query": "When was the album Jesus Is King by Matthew West released?",
+      "timeSensitivity": "none",
+      "basis": {
+        "album": "Jesus Is King",
+        "artist": "Matthew West",
+        "expectedDate": "2026-04-17"
+      }
+    },
+    {
+      "id": "q065",
+      "tier": "detail",
+      "template": "concert-venue",
+      "entity": "Tauren Wells",
+      "entityUrl": "https://www.gospelhub.love/concerts/40dbe953-78a3-4b17-a2cf-d7a496c9b1b0",
+      "query": "Which venue is Tauren Wells playing at in Dayton, OH?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Tauren Wells",
+        "city": "Dayton, OH",
+        "expectedVenue": "Christian Life Center",
+        "date": "2026-10-22"
+      }
+    },
+    {
+      "id": "q066",
+      "tier": "detail",
+      "template": "release",
+      "entity": "The Long Surrender",
+      "entityUrl": "https://www.gospelhub.love/releases/0c6437de-a2ca-4263-88cb-601833875832",
+      "query": "When was the album The Long Surrender by NEEDTOBREATHE released?",
+      "timeSensitivity": "none",
+      "basis": {
+        "album": "The Long Surrender",
+        "artist": "NEEDTOBREATHE",
+        "expectedDate": "2026-03-28"
+      }
+    },
+    {
+      "id": "q067",
+      "tier": "detail",
+      "template": "concert-venue",
+      "entity": "Tauren Wells",
+      "entityUrl": "https://www.gospelhub.love/concerts/ee435f41-95db-4e46-8e75-e0ee699bf339",
+      "query": "Which venue is Tauren Wells playing at in Frederick, MD?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Tauren Wells",
+        "city": "Frederick, MD",
+        "expectedVenue": "International Community Church",
+        "date": "2026-10-10"
+      }
+    },
+    {
+      "id": "q068",
+      "tier": "detail",
+      "template": "release",
+      "entity": "BEHOLD (Acoustic Live), Vol. 2",
+      "entityUrl": "https://www.gospelhub.love/releases/6d9dfae2-f461-4792-9883-1bc00b8c0386",
+      "query": "When was the album BEHOLD (Acoustic Live), Vol. 2 by AOH Music released?",
+      "timeSensitivity": "none",
+      "basis": {
+        "album": "BEHOLD (Acoustic Live), Vol. 2",
+        "artist": "AOH Music",
+        "expectedDate": "2026-02-27"
+      }
+    },
+    {
+      "id": "q069",
+      "tier": "detail",
+      "template": "concert-venue",
+      "entity": "We Are Messengers",
+      "entityUrl": "https://www.gospelhub.love/concerts/80d76097-652e-48fc-bb23-8307aa687c1b",
+      "query": "Which venue is We Are Messengers playing at in Pace, FL?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "We Are Messengers",
+        "city": "Pace, FL",
+        "expectedVenue": "Immanuel Baptist Church",
+        "date": "2026-10-11"
+      }
+    },
+    {
+      "id": "q070",
+      "tier": "detail",
+      "template": "release",
+      "entity": "You Lift Me Up",
+      "entityUrl": "https://www.gospelhub.love/releases/ece65a75-6c7e-4f7e-ac63-e02bbe1cb673",
+      "query": "When was the album You Lift Me Up by Phil King released?",
+      "timeSensitivity": "none",
+      "basis": {
+        "album": "You Lift Me Up",
+        "artist": "Phil King",
+        "expectedDate": "2026-07-17"
+      }
+    },
+    {
+      "id": "q071",
+      "tier": "aggregate",
+      "template": "year-list",
+      "entity": null,
+      "query": "What gospel albums came out in 2026?",
+      "timeSensitivity": "none",
+      "basis": {
+        "year": "2026"
+      }
+    },
+    {
+      "id": "q072",
+      "tier": "aggregate",
+      "template": "concerts-city",
+      "entity": null,
+      "query": "What gospel concerts are coming up in Cleveland, OH?",
+      "timeSensitivity": "window",
+      "basis": {
+        "city": "Cleveland, OH",
+        "knownConcerts": "3"
+      }
+    },
+    {
+      "id": "q073",
+      "tier": "aggregate",
+      "template": "concerts-city",
+      "entity": null,
+      "query": "What gospel concerts are coming up in Atlanta, GA?",
+      "timeSensitivity": "window",
+      "basis": {
+        "city": "Atlanta, GA",
+        "knownConcerts": "3"
+      }
+    },
+    {
+      "id": "q074",
+      "tier": "aggregate",
+      "template": "concerts-city",
+      "entity": null,
+      "query": "What gospel concerts are coming up in San Antonio, TX?",
+      "timeSensitivity": "window",
+      "basis": {
+        "city": "San Antonio, TX",
+        "knownConcerts": "3"
+      }
+    },
+    {
+      "id": "q075",
+      "tier": "aggregate",
+      "template": "concerts-city",
+      "entity": null,
+      "query": "What gospel concerts are coming up in Arlington, TX?",
+      "timeSensitivity": "window",
+      "basis": {
+        "city": "Arlington, TX",
+        "knownConcerts": "3"
+      }
+    },
+    {
+      "id": "q076",
+      "tier": "aggregate",
+      "template": "concerts-city",
+      "entity": null,
+      "query": "What gospel concerts are coming up in Tampa, FL?",
+      "timeSensitivity": "window",
+      "basis": {
+        "city": "Tampa, FL",
+        "knownConcerts": "2"
+      }
+    },
+    {
+      "id": "q077",
+      "tier": "aggregate",
+      "template": "concerts-city",
+      "entity": null,
+      "query": "What gospel concerts are coming up in Cincinnati, OH?",
+      "timeSensitivity": "window",
+      "basis": {
+        "city": "Cincinnati, OH",
+        "knownConcerts": "2"
+      }
+    },
+    {
+      "id": "q078",
+      "tier": "aggregate",
+      "template": "concerts-city",
+      "entity": null,
+      "query": "What gospel concerts are coming up in Tulsa, OK?",
+      "timeSensitivity": "window",
+      "basis": {
+        "city": "Tulsa, OK",
+        "knownConcerts": "2"
+      }
+    },
+    {
+      "id": "q079",
+      "tier": "aggregate",
+      "template": "concerts-city",
+      "entity": null,
+      "query": "What gospel concerts are coming up in Peoria, IL?",
+      "timeSensitivity": "window",
+      "basis": {
+        "city": "Peoria, IL",
+        "knownConcerts": "2"
+      }
+    },
+    {
+      "id": "q080",
+      "tier": "aggregate",
+      "template": "concerts-city",
+      "entity": null,
+      "query": "What gospel concerts are coming up in Lubbock, TX?",
+      "timeSensitivity": "window",
+      "basis": {
+        "city": "Lubbock, TX",
+        "knownConcerts": "2"
+      }
+    },
+    {
+      "id": "q081",
+      "tier": "aggregate",
+      "template": "concerts-city",
+      "entity": null,
+      "query": "What gospel concerts are coming up in Evansville, IN?",
+      "timeSensitivity": "window",
+      "basis": {
+        "city": "Evansville, IN",
+        "knownConcerts": "2"
+      }
+    },
+    {
+      "id": "q082",
+      "tier": "aggregate",
+      "template": "concerts-month",
+      "entity": null,
+      "query": "What gospel concerts are happening in October 2026?",
+      "timeSensitivity": "none",
+      "basis": {
+        "month": "2026-10",
+        "knownConcerts": "52"
+      }
+    },
+    {
+      "id": "q083",
+      "tier": "aggregate",
+      "template": "concerts-month",
+      "entity": null,
+      "query": "What gospel concerts are happening in November 2026?",
+      "timeSensitivity": "none",
+      "basis": {
+        "month": "2026-11",
+        "knownConcerts": "15"
+      }
+    },
+    {
+      "id": "q084",
+      "tier": "aggregate",
+      "template": "concerts-month",
+      "entity": null,
+      "query": "What gospel concerts are happening in December 2026?",
+      "timeSensitivity": "none",
+      "basis": {
+        "month": "2026-12",
+        "knownConcerts": "3"
+      }
+    },
+    {
+      "id": "q085",
+      "tier": "aggregate",
+      "template": "concerts-month",
+      "entity": null,
+      "query": "What gospel concerts are happening in February 2027?",
+      "timeSensitivity": "none",
+      "basis": {
+        "month": "2027-02",
+        "knownConcerts": "2"
+      }
+    },
+    {
+      "id": "q086",
+      "tier": "fresh",
+      "template": "artist-touring",
+      "entity": "Tauren Wells",
+      "entityUrl": "https://www.gospelhub.love/artists/8e1ccf63-f67f-488f-b69c-3c980057a047",
+      "query": "Where is Tauren Wells playing live next?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Tauren Wells",
+        "knownUpcoming": "15"
+      }
+    },
+    {
+      "id": "q087",
+      "tier": "fresh",
+      "template": "latest",
+      "entity": "Olivia Lane",
+      "entityUrl": "https://www.gospelhub.love/artists/20d6f9ca-e7df-40e0-a9d5-52b7e93eb9ab",
+      "query": "What is Olivia Lane's latest single or album?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Olivia Lane"
+      }
+    },
+    {
+      "id": "q088",
+      "tier": "fresh",
+      "template": "new-releases",
+      "entity": null,
+      "query": "What are the new gospel releases this month?",
+      "timeSensitivity": "window"
+    },
+    {
+      "id": "q089",
+      "tier": "fresh",
+      "template": "artist-touring",
+      "entity": "Elevation Worship",
+      "entityUrl": "https://www.gospelhub.love/artists/c93b8903-4aeb-4acb-99c7-b22866edcbfc",
+      "query": "Where is Elevation Worship playing live next?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Elevation Worship",
+        "knownUpcoming": "2"
+      }
+    },
+    {
+      "id": "q090",
+      "tier": "fresh",
+      "template": "latest",
+      "entity": "Kutless",
+      "entityUrl": "https://www.gospelhub.love/artists/7d07d154-8fce-4c56-9de5-ee10af7349aa",
+      "query": "What is Kutless's latest single or album?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Kutless"
+      }
+    },
+    {
+      "id": "q091",
+      "tier": "fresh",
+      "template": "new-releases",
+      "entity": null,
+      "query": "What gospel albums came out recently?",
+      "timeSensitivity": "window"
+    },
+    {
+      "id": "q092",
+      "tier": "fresh",
+      "template": "artist-touring",
+      "entity": "TobyMac",
+      "entityUrl": "https://www.gospelhub.love/artists/827ce457-d8dc-441d-bff3-c9de2024fd50",
+      "query": "Where is TobyMac playing live next?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "TobyMac",
+        "knownUpcoming": "6"
+      }
+    },
+    {
+      "id": "q093",
+      "tier": "fresh",
+      "template": "latest",
+      "entity": "The Belonging Co",
+      "entityUrl": "https://www.gospelhub.love/artists/0fcd097b-8a01-4ea5-9241-51b32527a934",
+      "query": "What is The Belonging Co's latest single or album?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "The Belonging Co"
+      }
+    },
+    {
+      "id": "q094",
+      "tier": "fresh",
+      "template": "new-releases",
+      "entity": null,
+      "query": "Any new gospel music released in the last few weeks?",
+      "timeSensitivity": "window"
+    },
+    {
+      "id": "q095",
+      "tier": "fresh",
+      "template": "artist-touring",
+      "entity": "Phil Wickham",
+      "entityUrl": "https://www.gospelhub.love/artists/e388f59b-f02f-4632-b78b-0c651cadbbb5",
+      "query": "Where is Phil Wickham playing live next?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Phil Wickham",
+        "knownUpcoming": "2"
+      }
+    },
+    {
+      "id": "q096",
+      "tier": "fresh",
+      "template": "latest",
+      "entity": "Francesca Battistelli",
+      "entityUrl": "https://www.gospelhub.love/artists/41e9958e-2820-4b88-a755-1962daa88051",
+      "query": "What is Francesca Battistelli's latest single or album?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Francesca Battistelli"
+      }
+    },
+    {
+      "id": "q097",
+      "tier": "fresh",
+      "template": "artist-touring",
+      "entity": "Blessing Offor",
+      "entityUrl": "https://www.gospelhub.love/artists/590852b4-8f8e-4136-81ae-2d770e49dde4",
+      "query": "Where is Blessing Offor playing live next?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Blessing Offor",
+        "knownUpcoming": "8"
+      }
+    },
+    {
+      "id": "q098",
+      "tier": "fresh",
+      "template": "latest",
+      "entity": "Jeremy Riddle",
+      "entityUrl": "https://www.gospelhub.love/artists/b7494502-8f9c-44a7-a494-6a2297175c80",
+      "query": "What is Jeremy Riddle's latest single or album?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Jeremy Riddle"
+      }
+    },
+    {
+      "id": "q099",
+      "tier": "fresh",
+      "template": "artist-touring",
+      "entity": "KB",
+      "entityUrl": "https://www.gospelhub.love/artists/40c9a491-3035-454d-9242-a5d22a2d079c",
+      "query": "Where is KB playing live next?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "KB",
+        "knownUpcoming": "1"
+      }
+    },
+    {
+      "id": "q100",
+      "tier": "fresh",
+      "template": "latest",
+      "entity": "Chris Tomlin",
+      "entityUrl": "https://www.gospelhub.love/artists/2e27596b-a299-4a58-9716-c33d990ee651",
+      "query": "What is Chris Tomlin's latest single or album?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Chris Tomlin"
+      }
+    },
+    {
+      "id": "q101",
+      "tier": "fresh",
+      "template": "artist-touring",
+      "entity": "Passion",
+      "entityUrl": "https://www.gospelhub.love/artists/13c3fa52-6c8b-4b43-9473-5e540bed5731",
+      "query": "Where is Passion playing live next?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Passion",
+        "knownUpcoming": "5"
+      }
+    },
+    {
+      "id": "q102",
+      "tier": "fresh",
+      "template": "latest",
+      "entity": "TobyMac",
+      "entityUrl": "https://www.gospelhub.love/artists/827ce457-d8dc-441d-bff3-c9de2024fd50",
+      "query": "What is TobyMac's latest single or album?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "TobyMac"
+      }
+    },
+    {
+      "id": "q103",
+      "tier": "fresh",
+      "template": "artist-touring",
+      "entity": "Charity Gayle",
+      "entityUrl": "https://www.gospelhub.love/artists/351fb835-4ba1-4267-bf2a-d27b9b6c350c",
+      "query": "Where is Charity Gayle playing live next?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Charity Gayle",
+        "knownUpcoming": "9"
+      }
+    },
+    {
+      "id": "q104",
+      "tier": "fresh",
+      "template": "latest",
+      "entity": "Hillsong Worship",
+      "entityUrl": "https://www.gospelhub.love/artists/d26a4860-b2c0-454a-ba2f-1dfe151d3671",
+      "query": "What is Hillsong Worship's latest single or album?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Hillsong Worship"
+      }
+    },
+    {
+      "id": "q105",
+      "tier": "fresh",
+      "template": "artist-touring",
+      "entity": "Natalie Grant",
+      "entityUrl": "https://www.gospelhub.love/artists/d95c4bdc-8938-4e26-b033-3aa13305e246",
+      "query": "Where is Natalie Grant playing live next?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Natalie Grant",
+        "knownUpcoming": "1"
+      }
+    },
+    {
+      "id": "q106",
+      "tier": "fresh",
+      "template": "latest",
+      "entity": "SEU Worship",
+      "entityUrl": "https://www.gospelhub.love/artists/51a68e2d-c2ee-4e2e-a911-25654fcf68be",
+      "query": "What is SEU Worship's latest single or album?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "SEU Worship"
+      }
+    },
+    {
+      "id": "q107",
+      "tier": "fresh",
+      "template": "artist-touring",
+      "entity": "We Are Messengers",
+      "entityUrl": "https://www.gospelhub.love/artists/bd840c22-8a68-4160-b24b-a6e1f1925437",
+      "query": "Where is We Are Messengers playing live next?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "We Are Messengers",
+        "knownUpcoming": "2"
+      }
+    },
+    {
+      "id": "q108",
+      "tier": "fresh",
+      "template": "latest",
+      "entity": "Austin French",
+      "entityUrl": "https://www.gospelhub.love/artists/40e69145-1523-44ac-8753-df49ba83e05a",
+      "query": "What is Austin French's latest single or album?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Austin French"
+      }
+    },
+    {
+      "id": "q109",
+      "tier": "fresh",
+      "template": "artist-touring",
+      "entity": "Bethel Music",
+      "entityUrl": "https://www.gospelhub.love/artists/626ca03d-003c-44ee-90ce-5185a37464dd",
+      "query": "Where is Bethel Music playing live next?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Bethel Music",
+        "knownUpcoming": "2"
+      }
+    },
+    {
+      "id": "q110",
+      "tier": "fresh",
+      "template": "latest",
+      "entity": "We The Kingdom",
+      "entityUrl": "https://www.gospelhub.love/artists/865381ca-9795-4619-afd4-8b3db54944f2",
+      "query": "What is We The Kingdom's latest single or album?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "We The Kingdom"
+      }
+    },
+    {
+      "id": "q111",
+      "tier": "fresh",
+      "template": "artist-touring",
+      "entity": "Tye Tribbett",
+      "entityUrl": "https://www.gospelhub.love/artists/b1eb4ec8-b7b0-4c97-ad66-843e6a57d744",
+      "query": "Where is Tye Tribbett playing live next?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Tye Tribbett",
+        "knownUpcoming": "1"
+      }
+    },
+    {
+      "id": "q112",
+      "tier": "fresh",
+      "template": "latest",
+      "entity": "NF",
+      "entityUrl": "https://www.gospelhub.love/artists/d0468dc4-c9a6-4b8e-99bf-a4c125b920b3",
+      "query": "What is NF's latest single or album?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "NF"
+      }
+    },
+    {
+      "id": "q113",
+      "tier": "fresh",
+      "template": "artist-touring",
+      "entity": "Zach Williams",
+      "entityUrl": "https://www.gospelhub.love/artists/101246bc-9873-46a8-ab01-707a274b6d96",
+      "query": "Where is Zach Williams playing live next?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Zach Williams",
+        "knownUpcoming": "14"
+      }
+    },
+    {
+      "id": "q114",
+      "tier": "fresh",
+      "template": "latest",
+      "entity": "Skillet",
+      "entityUrl": "https://www.gospelhub.love/artists/753bbe11-ea60-494d-839a-deeb990eb8c9",
+      "query": "What is Skillet's latest single or album?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Skillet"
+      }
+    },
+    {
+      "id": "q115",
+      "tier": "fresh",
+      "template": "artist-touring",
+      "entity": "Chandler Moore",
+      "entityUrl": "https://www.gospelhub.love/artists/c2566155-b925-44d3-96bc-e15d8418ad01",
+      "query": "Where is Chandler Moore playing live next?",
+      "timeSensitivity": "entity-relative",
+      "basis": {
+        "artist": "Chandler Moore",
+        "knownUpcoming": "6"
+      }
+    }
+  ]
+}
